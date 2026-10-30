@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a2a1f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MF Reparto">
+<meta name="robots" content="noindex">
+<title>FarmaHouse · Repartidor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --lino:#e8dccb; --lino2:#dccdb7; --crema:#fbf6ee; --crema2:#f3ebdf; --borde:#d3c3ab;
+    --espresso:#3a2a1f; --espresso2:#4a3627; --cafe:#5a3d27; --laton:#b8945a; --cognac:#9a5229;
+    --verde:#1f5fbf; --verde2:#174a96; --texto:#2b1f17; --mut:#7a6553; --rojo:#b42323; --ambar:#a8711d;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; background:var(--lino); color:var(--texto); font-family:var(--sans); }
+  body{ min-height:100vh; padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+  button{ font-family:inherit; }
+  .top{
+    position:sticky; top:0; z-index:500; color:#f3e9da;
+    padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+    background:linear-gradient(135deg,#3a2a1f 0%,#4d3627 55%,#3a2a1f 100%);
+    border-bottom:2px solid var(--laton); box-shadow:0 8px 24px -12px rgba(30,18,10,.7);
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo{ font-family:var(--serif); font-size:24px; line-height:1; white-space:nowrap; }
+  .logo b{ color:#5fbf86; font-weight:600; }
+  .logo small{ display:block; font-family:var(--sans); font-size:10px; letter-spacing:.14em; color:var(--laton); font-weight:700; margin-top:3px; }
+  .top .sp{ flex:1; }
+  .chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 11px; border-radius:30px; font-size:12px; font-weight:700;
+         background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#f3e9da; white-space:nowrap; }
+  .chip .dot{ width:8px; height:8px; border-radius:50%; background:#9b8b78; }
+  .chip.on .dot{ background:#5fd38d; box-shadow:0 0 0 0 rgba(95,211,141,.7); animation:pulso 1.6s infinite; }
+  .chip.warn .dot{ background:#e0b25c; }
+  @keyframes pulso{ 70%{ box-shadow:0 0 0 8px rgba(95,211,141,0);} 100%{ box-shadow:0 0 0 0 rgba(95,211,141,0);} }
+  .chip.btn-disp{ cursor:pointer; font-family:inherit; }
+  .chip.btn-disp.descanso{ background:rgba(224,178,92,.18); border-color:rgba(224,178,92,.5); color:#f1d9a8; }
+  .icono{ background:none; border:0; color:#f3e9da; font-size:20px; padding:6px; cursor:pointer; }
+  main{ max-width:640px; margin:0 auto; padding:14px; }
+  .card{ background:var(--crema); border:1px solid var(--borde); border-radius:18px; box-shadow:0 10px 26px -18px rgba(60,38,20,.6); }
+  .login{ padding:26px 22px; margin-top:8vh; }
+  .login h1{ font-family:var(--serif); font-weight:500; font-size:30px; margin:0 0 4px; }
+  .login p{ color:var(--mut); margin:0 0 20px; font-size:14px; }
+  label{ display:block; font-size:11px; font-weight:800; letter-spacing:.06em; color:var(--mut); margin:12px 0 6px; text-transform:uppercase; }
+  input{ width:100%; padding:14px; border-radius:12px; border:1px solid var(--borde); background:#fffaf2; font-size:16px; color:var(--texto); outline:none; }
+  input:focus{ border-color:var(--verde); box-shadow:0 0 0 3px rgba(46,125,82,.15); }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:0; border-radius:14px; padding:15px 16px;
+        font-size:15px; font-weight:800; cursor:pointer; color:#fff; background:linear-gradient(180deg,#348c5c,var(--verde2)); }
+  .btn:active{ transform:scale(.985); }
+  .btn[disabled]{ opacity:.6; }
+  .btn.sec{ background:var(--crema2); color:var(--texto); border:1px solid var(--borde); }
+  .btn.cafe{ background:linear-gradient(180deg,#4d3627,var(--espresso)); }
+  .btn.laton{ background:linear-gradient(180deg,#c7a56a,#a8844b); color:#2b1f17; }
+  .err{ color:var(--rojo); font-size:13px; font-weight:600; min-height:18px; margin-top:12px; }
+  .aviso{ padding:12px 14px; border-radius:14px; font-size:13px; line-height:1.5; margin-bottom:12px; }
+  .aviso.info{ background:#f3ebdf; border:1px dashed #c9b79e; color:var(--texto); }
+  .aviso.mal{ background:rgba(180,35,35,.08); border:1px solid rgba(180,35,35,.25); color:#8f1c1c; }
+  #mapa{ height:240px; border-radius:18px; overflow:hidden; border:1px solid var(--borde); margin-bottom:14px; display:none; z-index:1; }
+  .seccion{ font-family:var(--serif); font-size:21px; margin:18px 4px 10px; display:flex; align-items:baseline; gap:8px; }
+  .seccion small{ font-family:var(--sans); font-size:12px; color:var(--mut); }
+  .pedido{ padding:16px; margin-bottom:12px; }
+  .pedido.encamino{ border:2px solid var(--verde); }
+  .fila{ display:flex; align-items:center; gap:8px; }
+  .folio{ font-family:var(--serif); font-size:22px; font-weight:600; }
+  .estado{ margin-left:auto; padding:4px 10px; border-radius:30px; font-size:11.5px; font-weight:800; }
+  .estado.prep{ background:rgba(47,111,176,.12); color:#2f6fb0; }
+  .estado.cam{ background:rgba(46,125,82,.14); color:var(--verde); }
+  .cli{ font-weight:800; font-size:16px; margin-top:8px; }
+  .dom{ color:var(--texto); font-size:14px; margin-top:4px; line-height:1.45; }
+  .meta{ color:var(--mut); font-size:12.5px; margin-top:6px; }
+  .cobro{ margin-top:10px; padding:10px 12px; border-radius:12px; background:linear-gradient(160deg,var(--espresso2),var(--espresso)); color:#f3e9da;
+          display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+  .cobro b{ font-family:var(--serif); font-size:24px; color:#e2c48e; font-weight:500; }
+  .prods{ margin-top:10px; font-size:13px; color:var(--texto); background:var(--crema2); border-radius:12px; padding:10px 12px; line-height:1.55; }
+  .acciones{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+  .acciones a{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:10px 6px; border-radius:12px; text-decoration:none;
+               background:var(--crema2); border:1px solid var(--borde); color:var(--texto); font-size:11.5px; font-weight:700; }
+  .acciones a span{ font-size:20px; }
+  .acciones a.off{ opacity:.4; pointer-events:none; }
+  .pedido .btn{ margin-top:12px; }
+  .vacio{ text-align:center; padding:34px 18px; color:var(--mut); }
+  .vacio div{ font-size:42px; margin-bottom:6px; }
+  .pie{ text-align:center; font-size:11.5px; color:var(--mut); margin-top:22px; line-height:1.6; }
+  .toast{ position:fixed; left:50%; bottom:calc(18px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(140%);
+          background:var(--espresso); color:#f3e9da; padding:12px 16px; border-radius:14px; font-size:13.5px; font-weight:600;
+          box-shadow:0 14px 34px -12px rgba(0,0,0,.6); transition:transform .3s; z-index:2000; max-width:92vw; border:1px solid var(--laton); }
+  .toast.show{ transform:translateX(-50%) translateY(0); }
+  .pin{ font-size:26px; line-height:1; filter:drop-shadow(0 3px 3px rgba(0,0,0,.35)); }
+  .yo{ width:18px; height:18px; border-radius:50%; background:#2f6fb0; border:3px solid #fff; box-shadow:0 0 0 6px rgba(47,111,176,.25); }
+  .spin{ width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:gira .8s linear infinite; }
+  @keyframes gira{ to{ transform:rotate(360deg);} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><b>✚ Mi</b> Farmacia<small>REPARTO</small></div>
+  <div class="sp"></div>
+  <button id="btnDisp" class="chip btn-disp" style="display:none" onclick="cambiarDisponible()"></button>
+  <span id="chipGps" class="chip" style="display:none"><span class="dot"></span><span id="txtGps">GPS</span></span>
+  <button id="btnSalir" class="icono" title="Cerrar sesión" style="display:none" onclick="salir()">⏻</button>
+</header>
+
+<main>
+  
+  <section id="vistaLogin" class="card login" style="display:none">
+    <h1>Hola 👋</h1>
+    <p>Entra con el usuario y la contraseña que te dio la farmacia.</p>
+    <label for="txtCorreo">Usuario</label>
+    <input id="txtCorreo" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="tu usuario">
+    <label for="txtPass">Contraseña</label>
+    <input id="txtPass" type="password" autocomplete="current-password" placeholder="••••••••">
+    <button id="btnEntrar" class="btn" style="margin-top:18px" onclick="entrar()">Entrar</button>
+    <div id="errLogin" class="err"></div>
+  </section>
+
+  
+  <section id="vistaApp" style="display:none">
+    <div id="avisoGps"></div>
+    <div id="mapa"></div>
+    <div id="lista"></div>
+    <div class="pie">
+      Tu ubicación solo se comparte mientras tienes pedidos <b>En camino</b>, y solo la ve el cliente de ese pedido.<br>
+      Deja esta pantalla abierta mientras entregas.
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://mcqgvzaoaaqujledrxop.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jcWd2emFvYWFxdWpsZWRyeG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NDExODEsImV4cCI6MjEwODAxNzE4MX0.tHe7728Jb7xWXFEPcFAlnW1vdIZ7oF4AXUj9TTEjBBg';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { db: { schema: 'tienda' },
+  auth: { storageKey: 'mf-repartidor-auth', persistSession: true, autoRefreshToken: true }
+});
+
+const ENVIO_CADA_MS = 8000;
+const ENVIO_MIN_METROS = 15;
+let usuario = null, staff = null, pedidos = [];
+let watchId = null, ultimaPos = null, ultimoEnvio = { t: 0, lat: null, lng: null }, enviando = false;
+let wakeLock = null, canal = null, sondeo = null, idsConocidos = null;
+let mapa = null, marcaYo = null, marcasDestino = [];
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const dinero = n => '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function toast(t, ms = 3500){ const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), ms); }
+function metros(a, b){ const R = 6371000, r = x => x * Math.PI / 180; const dLat = r(b.lat - a.lat), dLng = r(b.lng - a.lng);
+  const h = Math.sin(dLat/2)**2 + Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLng/2)**2; return 2 * R * Math.asin(Math.sqrt(h)); }
+function soloDigitos(t){ return String(t || '').replace(/\D/g, ''); }
+
+async function iniciar(){
+  const { data } = await sb.auth.getSession();
+  if (data.session) await cargarStaff(data.session.user); else mostrarLogin();
+}
+function mostrarLogin(){ $('vistaLogin').style.display = 'block'; $('vistaApp').style.display = 'none'; $('btnSalir').style.display = 'none'; $('chipGps').style.display = 'none'; $('btnDisp').style.display = 'none'; }
+
+function pintarDisponible(){
+  const b = $('btnDisp'), on = !staff || staff.disponible !== false;
+  b.style.display = 'inline-flex';
+  b.classList.toggle('descanso', !on);
+  b.innerHTML = on ? '🟢 Disponible' : '⏸ En descanso';
+  b.title = on ? 'Toca para ponerte en descanso (no te asignarán pedidos nuevos)' : 'Toca para volver a recibir pedidos';
+}
+async function cambiarDisponible(){
+  const nuevo = staff.disponible === false;
+  if (!nuevo && !confirm('¿Ponerte en descanso? No te asignarán pedidos nuevos automáticamente.\nLos que ya tienes siguen aquí.')) return;
+  const { error } = await sb.rpc('mi_disponibilidad', { p_disponible: nuevo });
+  if (error) { toast('❌ ' + error.message, 5000); return; }
+  staff.disponible = nuevo; pintarDisponible();
+  toast(nuevo ? '🟢 Listo, ya puedes recibir pedidos.' : '⏸ Estás en descanso.');
+}
+
+async function entrar(){
+  const usuario = $('txtCorreo').value.trim().toLowerCase(), pass = $('txtPass').value;
+  if (!usuario || !pass) { $('errLogin').textContent = 'Escribe tu usuario y contraseña.'; return; }
+
+  const correo = usuario.includes('@') ? usuario : usuario + '@pvifarma.local';
+  const b = $('btnEntrar'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Entrando...'; $('errLogin').textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email: correo, password: pass });
+  b.disabled = false; b.textContent = 'Entrar';
+  if (error) { $('errLogin').textContent = /invalid/i.test(error.message) ? 'Usuario o contraseña incorrectos.' : error.message; return; }
+  await cargarStaff(data.user);
+}
+
+async function cargarStaff(user){
+  const { data, error } = await sb.from('staff').select('user_id,nombre,rol,activo,sucursal_id,disponible').eq('user_id', user.id).maybeSingle();
+  if (error || !data || !data.activo) {
+    await sb.auth.signOut(); mostrarLogin();
+    $('errLogin').textContent = 'Esta cuenta no está dada de alta como personal de la farmacia.';
+    return;
+  }
+  usuario = user; staff = data;
+  $('vistaLogin').style.display = 'none'; $('vistaApp').style.display = 'block'; $('btnSalir').style.display = 'block';
+  pintarDisponible();
+  suscribir(); await cargarPedidos();
+  clearInterval(sondeo); sondeo = setInterval(cargarPedidos, 30000);
+}
+
+async function salir(){
+  if (pedidos.some(p => p.estado === 'En camino') && !confirm('Tienes entregas en camino. ¿Cerrar sesión de todos modos?')) return;
+  detenerGps(); try { await sb.rpc('dejar_de_compartir'); } catch(e){}
+  clearInterval(sondeo); if (canal) sb.removeChannel(canal); canal = null;
+  await sb.auth.signOut(); usuario = staff = null; pedidos = []; idsConocidos = null; mostrarLogin();
+}
+
+function suscribir(){
+  if (canal) sb.removeChannel(canal);
+  canal = sb.channel('reparto-' + usuario.id)
+    .on('postgres_changes', { event: '*', schema: 'tienda', table: 'pedidos', filter: 'repartidor_id=eq.' + usuario.id }, () => cargarPedidos())
+    .subscribe();
+}
+
+async function cargarPedidos(){
+  if (!usuario) return;
+  const { data, error } = await sb.from('pedidos')
+    .select('id,folio,marca,estado,cliente,telefono,domicilio,metodo_pago,total,productos,notas,lat_entrega,lng_entrega,sucursal_id,created_at,pedido_detalle(nombre,cantidad)')
+    .eq('repartidor_id', usuario.id)
+    .in('estado', ['En preparación', 'En camino'])
+    .order('created_at', { ascending: true });
+  if (error) { toast('Sin conexión. Reintentando…'); return; }
+  const ids = new Set(data.map(p => p.id));
+  if (idsConocidos) {
+    const nuevos = data.filter(p => !idsConocidos.has(p.id));
+    if (nuevos.length) { avisarNuevo(); toast('🛵 Te asignaron ' + nuevos.map(p => p.folio).join(', '), 6000); }
+  }
+  idsConocidos = ids; pedidos = data;
+  pintar(); revisarGps();
+}
+
+function avisarNuevo(){
+  try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e){}
+  try {
+    const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = .15; o.start();
+    setTimeout(() => { o.frequency.value = 1175; }, 180); setTimeout(() => { o.stop(); c.close(); }, 420);
+  } catch(e){}
+}
+
+function linkNavegar(p){
+  const dest = (p.lat_entrega != null) ? `${p.lat_entrega},${p.lng_entrega}` : encodeURIComponent(p.domicilio || '');
+  return `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=driving`;
+}
+
+function pintar(){
+  const cont = $('lista');
+  const camino = pedidos.filter(p => p.estado === 'En camino'), prep = pedidos.filter(p => p.estado !== 'En camino');
+  if (!pedidos.length) {
+    cont.innerHTML = `<div class="card vacio"><div>☕</div><b>No tienes entregas pendientes</b><br>Cuando la farmacia te asigne un pedido, aparecerá aquí y sonará el celular.</div>`;
+  } else {
+    cont.innerHTML =
+      (camino.length ? `<div class="seccion">🛵 En camino <small>${camino.length}</small></div>` + camino.map(tarjeta).join('') : '') +
+      (prep.length ? `<div class="seccion">📦 Por recoger en farmacia <small>${prep.length}</small></div>` + prep.map(tarjeta).join('') : '');
+  }
+  pintarMapa();
+}
+
+function tarjeta(p){
+  const enCamino = p.estado === 'En camino';
+  const tel = soloDigitos(p.telefono);
+  const wa = tel ? `https://wa.me/${tel.length === 10 ? '52' + tel : tel}?text=${encodeURIComponent(`Hola, soy el repartidor de ${p.marca === 'FARMAHOUSE' ? 'FarmaHouse' : 'Mi Farmacia'} con tu pedido ${p.folio}. `)}` : '';
+  const prods = (p.pedido_detalle && p.pedido_detalle.length)
+    ? p.pedido_detalle.map(d => `${d.cantidad} × ${esc(d.nombre)}`).join('<br>') : esc(p.productos || '');
+  const efectivo = /efectivo/i.test(p.metodo_pago || '');
+  return `
+  <article class="card pedido ${enCamino ? 'encamino' : ''}">
+    <div class="fila"><span class="folio">${esc(p.folio)}</span>
+      <span class="estado ${enCamino ? 'cam' : 'prep'}">${enCamino ? '🛵 En camino' : '📦 En preparación'}</span></div>
+    <div class="cli">${esc(p.cliente)}</div>
+    <div class="dom">📍 ${esc(p.domicilio)}</div>
+    <div class="meta">${p.lat_entrega != null ? '✅ El cliente marcó su ubicación en el mapa' : '⚠️ Sin pin en el mapa: guíate por la dirección'} · Sucursal ${esc(p.sucursal_id)}</div>
+    <div class="cobro"><span>${efectivo ? '💵 Cobrar en efectivo' : '💳 ' + esc(p.metodo_pago || 'Pagado')}</span><b>${dinero(p.total)}</b></div>
+    <div class="prods">${prods}</div>
+    ${p.notas ? `<div class="meta">📝 ${esc(p.notas)}</div>` : ''}
+    <div class="acciones">
+      <a href="${linkNavegar(p)}" target="_blank" rel="noopener"><span>🧭</span>Navegar</a>
+      <a href="${tel ? 'tel:' + tel : '#'}" class="${tel ? '' : 'off'}"><span>📞</span>Llamar</a>
+      <a href="${wa || '#'}" target="_blank" rel="noopener" class="${wa ? '' : 'off'}"><span>💬</span>WhatsApp</a>
+    </div>
+    ${enCamino
+      ? `<button class="btn" onclick="cambiarEstado(${p.id}, 'Entregado', this)">✅ Marcar como entregado</button>`
+      : `<button class="btn cafe" onclick="cambiarEstado(${p.id}, 'En camino', this)">🛵 Ya lo recogí · Salir a entregar</button>`}
+  </article>`;
+}
+
+async function cambiarEstado(id, estado, btn){
+  const p = pedidos.find(x => x.id === id); if (!p) return;
+  if (estado === 'Entregado' && !confirm(`¿Confirmas que entregaste ${p.folio} a ${p.cliente}?` + (/efectivo/i.test(p.metodo_pago || '') ? `\n\nCobra ${dinero(p.total)} en efectivo.` : ''))) return;
+  if (estado === 'En camino') await pedirPermisoGps();
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Guardando...';
+  const { error } = await sb.from('pedidos').update({ estado }).eq('id', id);
+  if (error) { toast('❌ ' + error.message, 6000); btn.disabled = false; pintar(); return; }
+  toast(estado === 'Entregado' ? '✅ ¡Entregado! Gracias.' : '🛵 Listo. El cliente ya puede verte en el mapa.');
+  await cargarPedidos();
+  if (estado === 'En camino') enviarUbicacion(true);
+}
+
+function pedirPermisoGps(){
+  return new Promise(res => {
+    if (!navigator.geolocation) return res(false);
+    navigator.geolocation.getCurrentPosition(pos => { ultimaPos = pos; res(true); }, () => res(false), { enableHighAccuracy: true, timeout: 12000 });
+  });
+}
+
+function revisarGps(){
+  if (pedidos.some(p => p.estado === 'En camino')) iniciarGps(); else detenerGps();
+}
+
+function iniciarGps(){
+  $('chipGps').style.display = 'inline-flex';
+  if (!navigator.geolocation) { estadoGps('warn', 'Sin GPS'); avisoGps('Este celular no permite compartir la ubicación. El cliente no podrá verte en el mapa.'); return; }
+  if (watchId !== null) return;
+  estadoGps('warn', 'Buscando GPS…');
+  watchId = navigator.geolocation.watchPosition(pos => {
+    ultimaPos = pos; avisoGps('');
+    enviarUbicacion(false); moverYo();
+  }, err => {
+    estadoGps('warn', 'GPS apagado');
+    avisoGps(err.code === 1
+      ? 'Activa el permiso de <b>Ubicación</b> para esta página (candado 🔒 junto a la dirección → Permisos → Ubicación → Permitir) y vuelve a cargar.'
+      : 'No se pudo leer el GPS. Revisa que la ubicación del celular esté encendida.');
+  }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  pedirWakeLock();
+}
+
+function detenerGps(){
+  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+  soltarWakeLock();
+  if (staff) { $('chipGps').style.display = 'inline-flex'; estadoGps('', 'Ubicación apagada'); }
+}
+
+function estadoGps(clase, texto){ const c = $('chipGps'); c.className = 'chip ' + clase; $('txtGps').textContent = texto; }
+function avisoGps(html){ $('avisoGps').innerHTML = html ? `<div class="aviso mal">📡 ${html}</div>` : ''; }
+
+async function enviarUbicacion(forzar){
+  if (!ultimaPos || enviando || !pedidos.some(p => p.estado === 'En camino')) return;
+  const c = ultimaPos.coords, ahora = Date.now();
+  const movido = ultimoEnvio.lat == null ? Infinity : metros({ lat: ultimoEnvio.lat, lng: ultimoEnvio.lng }, { lat: c.latitude, lng: c.longitude });
+  if (!forzar && ahora - ultimoEnvio.t < ENVIO_CADA_MS && movido < ENVIO_MIN_METROS) return;
+  if (!forzar && ahora - ultimoEnvio.t < 3000) return;
+  enviando = true;
+  try {
+    const { data, error } = await sb.rpc('reportar_ubicacion', {
+      p_lat: c.latitude, p_lng: c.longitude, p_precision: c.accuracy ?? null,
+      p_rumbo: Number.isFinite(c.heading) ? c.heading : null, p_velocidad: Number.isFinite(c.speed) ? c.speed : null });
+    if (error) throw error;
+    ultimoEnvio = { t: ahora, lat: c.latitude, lng: c.longitude };
+    if (data && data.compartiendo === false) { detenerGps(); return; }
+    estadoGps('on', 'Compartiendo' + (c.accuracy ? ` · ±${Math.round(c.accuracy)} m` : ''));
+  } catch(e) {
+    estadoGps('warn', 'Sin señal…');
+  } finally { enviando = false; }
+}
+
+setInterval(() => { if (watchId !== null && Date.now() - ultimoEnvio.t > 20000) enviarUbicacion(true); }, 5000);
+
+async function pedirWakeLock(){
+  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch(e){}
+}
+function soltarWakeLock(){ try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null; }
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && usuario) { cargarPedidos(); if (watchId !== null) { pedirWakeLock(); enviarUbicacion(true); } }
+});
+
+function crearMapa(){
+  if (mapa || !window.L) return;
+  mapa = L.map('mapa', { zoomControl: false, attributionControl: true });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(mapa);
+}
+function pintarMapa(){
+  const destinos = pedidos.filter(p => p.lat_entrega != null);
+  const mostrar = destinos.length || (watchId !== null && ultimaPos);
+  $('mapa').style.display = mostrar ? 'block' : 'none';
+  if (!mostrar) return;
+  crearMapa(); if (!mapa) return;
+  setTimeout(() => mapa.invalidateSize(), 50);
+  marcasDestino.forEach(m => m.remove()); marcasDestino = [];
+  destinos.forEach(p => {
+    const icono = L.divIcon({ className: '', html: `<div class="pin">${p.estado === 'En camino' ? '🏠' : '📦'}</div>`, iconSize: [26, 26], iconAnchor: [13, 24] });
+    marcasDestino.push(L.marker([p.lat_entrega, p.lng_entrega], { icon: icono }).addTo(mapa).bindPopup(`<b>${esc(p.folio)}</b><br>${esc(p.cliente)}`));
+  });
+  moverYo(true);
+}
+function moverYo(encuadrar){
+  if (!mapa || !ultimaPos) { if (encuadrar) encuadre(); return; }
+  const ll = [ultimaPos.coords.latitude, ultimaPos.coords.longitude];
+  if (!marcaYo) marcaYo = L.marker(ll, { icon: L.divIcon({ className: '', html: '<div class="yo"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(mapa);
+  else marcaYo.setLatLng(ll);
+  if (encuadrar || !mapa._encuadrado) encuadre();
+}
+function encuadre(){
+  if (!mapa) return;
+  const pts = marcasDestino.map(m => m.getLatLng());
+  if (marcaYo) pts.push(marcaYo.getLatLng());
+  if (!pts.length) return;
+  if (pts.length === 1) mapa.setView(pts[0], 15); else mapa.fitBounds(L.latLngBounds(pts), { padding: [30, 30], maxZoom: 16 });
+  mapa._encuadrado = true;
+}
+
+$('txtPass').addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); });
+iniciar();
+</script>
+</body>
+</html>
