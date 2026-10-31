@@ -3707,7 +3707,7 @@
             const btn = document.getElementById("btnEnviarRec");
             btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> Enviando...`;
             try {
-                const { error } = await sb.auth.resetPasswordForEmail(em);
+                const { error } = await sb.auth.resetPasswordForEmail(em, { redirectTo: location.origin + "/tienda/" });
                 if (error) throw new Error(traducirErrorAuth(error.message));
                 correoRecuperacion = em;
                 document.getElementById("lblRecCorreo").innerText = em;
@@ -3818,7 +3818,7 @@
 
                 if(error) {
                     if ((error.message || "").toLowerCase().includes("email not confirmed")) {
-                        await sb.auth.resend({ type: "signup", email: em });
+                        await sb.auth.resend({ type: "signup", email: em, options: { emailRedirectTo: location.origin + "/tienda/" } });
                         showToast("Tu correo aún no está verificado. Te enviamos un código nuevo.", "warning", 6000);
                         mostrarVerificacion(em);
                     } else {
@@ -3856,7 +3856,7 @@
                 const { data, error } = await sb.auth.signUp({
                     email: em,
                     password: pas,
-                    options: { data: { nombre: nom, marca: MARCA } }
+                    options: { data: { nombre: nom, marca: MARCA }, emailRedirectTo: location.origin + "/tienda/" }
                 });
                 if(error) throw new Error(traducirErrorAuth(error.message));
 
@@ -3906,7 +3906,7 @@
 
         async function reenviarCodigoVerificacion() {
             if (!correoPendienteVerificacion) return;
-            const { error } = await sb.auth.resend({ type: "signup", email: correoPendienteVerificacion });
+            const { error } = await sb.auth.resend({ type: "signup", email: correoPendienteVerificacion, options: { emailRedirectTo: location.origin + "/tienda/" } });
             if (error) showToast(traducirErrorAuth(error.message), "danger");
             else showToast("Código reenviado. Revisa también tu carpeta de spam.", "success");
         }
