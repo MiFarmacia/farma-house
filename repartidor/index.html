@@ -224,9 +224,10 @@ function suscribir(){
 async function cargarPedidos(){
   if (!usuario) return;
   const { data, error } = await sb.from('pedidos')
-    .select('id,folio,marca,estado,cliente,telefono,domicilio,metodo_pago,total,productos,notas,lat_entrega,lng_entrega,sucursal_id,created_at,pedido_detalle(nombre,cantidad)')
+    .select('id,folio,marca,fecha_entrega,estado,cliente,telefono,domicilio,metodo_pago,total,productos,notas,lat_entrega,lng_entrega,sucursal_id,created_at,pedido_detalle(nombre,cantidad)')
     .eq('repartidor_id', usuario.id)
     .in('estado', ['En preparación', 'En camino'])
+    .order('fecha_entrega', { ascending: true, nullsFirst: true })
     .order('created_at', { ascending: true });
   if (error) { toast('Sin conexión. Reintentando…'); return; }
   const ids = new Set(data.map(p => p.id));
@@ -276,6 +277,7 @@ function tarjeta(p){
   <article class="card pedido ${enCamino ? 'encamino' : ''}">
     <div class="fila"><span class="folio">${esc(p.folio)}</span>
       <span class="estado ${enCamino ? 'cam' : 'prep'}">${enCamino ? '🛵 En camino' : '📦 En preparación'}</span></div>
+    ${p.fecha_entrega ? `<div class="meta">📅 Entregar el ${esc(new Date(p.fecha_entrega + 'T12:00:00').toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }))}</div>` : ''}
     <div class="cli">${esc(p.cliente)}</div>
     <div class="dom">📍 ${esc(p.domicilio)}</div>
     <div class="meta">${p.lat_entrega != null ? '✅ El cliente marcó su ubicación en el mapa' : '⚠️ Sin pin en el mapa: guíate por la dirección'} · Sucursal ${esc(p.sucursal_id)}</div>
