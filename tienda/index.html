@@ -1283,6 +1283,60 @@
         .logo-fh{ height:46px !important; width:auto; background:#ffffff; border-radius:12px; padding:4px 10px; }
         .mayoreo-tag{ display:inline-block; margin-top:6px; padding:3px 8px; border-radius:8px; font-size:11px; font-weight:700; color:var(--primary); background:var(--primary-glow); }
         .mayoreo-nota{ display:block; font-size:11px; color:var(--primary); font-weight:600; margin-top:2px; }
+        .entrega-op.bloqueada{ opacity:.5; cursor:not-allowed; }
+        .aviso-envio{ margin:-4px 0 12px; padding:10px 12px; border-radius:12px; font-size:12.5px; line-height:1.45; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); color:var(--text-main); }
+        .aviso-envio.ok{ background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.3); }
+        #grupoFechaEntrega small{ display:block; margin-top:6px; font-size:11.5px; color:var(--text-muted); }
+        #grupoFechaEntrega select, .lr-tabla select{ width:100%; padding:10px 12px; border-radius:10px; border:var(--border-glow); background:var(--bg-input); color:var(--text-main); font:inherit; }
+        .aviso-invitacion{ margin:10px 0 0; padding:12px 14px; border-radius:12px; background:var(--primary-glow); color:var(--text-main); font-size:13px; line-height:1.5; }
+        .aviso-invitacion a{ color:var(--primary); font-weight:700; }
+        .pvi-caja{ border:var(--border-glow); border-radius:16px; padding:14px; margin-bottom:14px; background:var(--bg-input); }
+        .pvi-caja > b{ display:block; margin-bottom:4px; }
+        .pvi-caja > small, .pvi-nota{ display:block; font-size:12px; color:var(--text-muted); line-height:1.45; margin-top:6px; }
+        .pvi-fila{ display:flex; gap:8px; margin-top:10px; }
+        .pvi-fila input{ flex:1; min-width:0; padding:10px 12px; border-radius:10px; border:var(--border-glow); background:#fff; text-transform:uppercase; letter-spacing:2px; font-weight:700; color:var(--text-main); }
+        .pvi-cab{ display:flex; gap:10px; align-items:center; margin-bottom:10px; }
+        .pvi-cab span{ font-size:24px; }
+        .pvi-cab small{ display:block; color:var(--text-muted); font-size:12px; }
+        .pvi-credito{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+        .pvi-credito div{ background:#fff; border:var(--border-glow); border-radius:12px; padding:8px 10px; }
+        .pvi-credito small{ display:block; font-size:11px; color:var(--text-muted); }
+        .pvi-credito b{ font-size:15px; }
+        .pvi-credito .destacado{ background:var(--primary); color:#fff; }
+        .pvi-credito .destacado small{ color:rgba(255,255,255,.8); }
+        .pvi-credito .alerta{ border-color:rgba(239,68,68,.5); color:#b91c1c; }
+        .pvi-det{ margin-top:10px; border-top:1px solid rgba(23,74,150,.1); padding-top:8px; }
+        .pvi-det summary{ cursor:pointer; font-weight:700; font-size:13px; padding:4px 0; }
+        .pvi-tabla{ width:100%; border-collapse:collapse; font-size:12.5px; margin-top:6px; }
+        .pvi-tabla th{ text-align:left; color:var(--text-muted); font-weight:600; font-size:11px; padding:4px; }
+        .pvi-tabla td{ padding:6px 4px; border-top:1px solid rgba(23,74,150,.08); vertical-align:top; }
+        .pvi-tabla td small{ display:block; color:var(--text-muted); font-size:11px; }
+        .pvi-tabla tr.vencido td{ color:#b91c1c; }
+        .pedido-rapido-barra{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:14px 0 4px; padding:12px 16px; border-radius:16px; background:linear-gradient(135deg,var(--espresso),var(--espresso-2)); color:#fff; }
+        .pedido-rapido-barra span{ font-size:13px; opacity:.9; flex:1; min-width:200px; }
+        .pedido-rapido-barra .btn{ background:#fff; color:var(--espresso); box-shadow:none; }
+        #modalPedidoRapido .modal-card-custom{ max-width:900px; }
+        #txtListaRapida{ width:100%; min-height:140px; padding:12px; border-radius:12px; border:var(--border-glow); background:var(--bg-input); color:var(--text-main); font:13px/1.5 ui-monospace,Menlo,Consolas,monospace; resize:vertical; }
+        .lr-acciones{ display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 14px; }
+        .lr-acciones .btn{ justify-content:center; }
+        .lr-archivo{ position:relative; overflow:hidden; }
+        .lr-archivo input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+        .lr-ayuda{ font-size:12px; color:var(--text-muted); margin:0 0 8px; line-height:1.5; }
+        .lr-tabla-caja{ overflow-x:auto; border:var(--border-glow); border-radius:12px; background:#fff; }
+        .lr-tabla{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:640px; }
+        .lr-tabla th{ text-align:left; padding:8px; background:var(--bg-input); font-size:11.5px; color:var(--text-muted); position:sticky; top:0; }
+        .lr-tabla td{ padding:8px; border-top:1px solid rgba(23,74,150,.08); vertical-align:middle; }
+        .lr-tabla input[type=number]{ width:72px; padding:6px 8px; border-radius:8px; border:var(--border-glow); background:var(--bg-input); color:var(--text-main); }
+        .lr-texto{ color:var(--text-muted); max-width:160px; word-break:break-word; }
+        .lr-num{ text-align:right; white-space:nowrap; }
+        .lr-num small{ display:block; font-size:10.5px; color:var(--text-muted); }
+        .lr-num small.lr-may{ color:var(--primary); font-weight:700; }
+        .lr-estado{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
+        .lr-estado.ok{ background:rgba(34,197,94,.12); color:#15803d; }
+        .lr-estado.varios, .lr-estado.poco{ background:rgba(245,158,11,.15); color:#b45309; }
+        .lr-estado.no{ background:rgba(239,68,68,.12); color:#b91c1c; }
+        .lr-pie{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:12px; font-size:13px; }
+        .lr-pie small{ color:var(--text-muted); }
         .header-center{ background: rgba(8, 22, 50, 0.35); border-color: rgba(225, 236, 252, 0.3); }
         .header-center select{ color: #bfe3c9; }
         .header-center select option{ color:#13213a; }
@@ -1545,6 +1599,10 @@
                 </div>
                 
                 <div id="sugerenciasBusqueda" class="search-suggestions"></div>
+                <div class="pedido-rapido-barra" id="barraPedidoRapido" style="display:none;">
+                    <button class="btn" type="button" onclick="abrirPedidoRapido()">⚡ Pedido rápido</button>
+                    <span>¿Surtes tu negocio? Pega tu lista o sube un Excel y llena el carrito en segundos, con precios de mayoreo.</span>
+                </div>
             </div>
             
             
@@ -1608,6 +1666,7 @@
                 <button class="panel-close-btn" onclick="cerrarModalPerfil()">✕</button>
             </div>
             <div id="panelPerfilCliente">
+                <div id="bloqueCuentaPvi"></div>
                 <div class="input-group">
                     <label>Teléfono</label>
                     <input type="tel" id="txtPrefTelefono" placeholder="5512345678">
@@ -1779,13 +1838,19 @@
                     <input type="text" id="orderNombre">
                 </div>
                 <div class="entrega-opciones" id="entregaOpciones">
-                    <label class="entrega-op activa"><input type="radio" name="tipoEntrega" value="domicilio" checked onchange="cambiarTipoEntrega()">🛵<span>Envío a domicilio<small>Te lo llevamos</small></span></label>
+                    <label class="entrega-op activa"><input type="radio" name="tipoEntrega" value="domicilio" checked onchange="cambiarTipoEntrega()">🛵<span>Envío a domicilio<small id="lblEnvioDom">Te lo llevamos</small></span></label>
                     <label class="entrega-op"><input type="radio" name="tipoEntrega" value="sucursal" onchange="cambiarTipoEntrega()">🏪<span>Recoger en sucursal<small id="lblSucRecoger">Pasas por él</small></span></label>
                 </div>
+                <div class="aviso-envio" id="avisoEnvioMinimo" style="display:none;"></div>
                 <div class="info-recoger" id="infoRecoger"></div>
                 <div class="input-group" id="grupoDomicilio">
                     <label>Domicilio Completo de Entrega</label>
                     <input type="text" id="orderDomicilio">
+                </div>
+                <div class="input-group" id="grupoFechaEntrega" style="display:none;">
+                    <label>Fecha de entrega</label>
+                    <select id="orderFechaEntrega" onchange="elegirFechaEntrega(this.value)"></select>
+                    <small id="lblFechaEntrega"></small>
                 </div>
                 <div class="checkout-ubic" id="checkoutUbic">
                     <span id="lblCheckoutUbic">📍 Marca tu ubicación en el mapa para que el repartidor llegue directo (opcional).</span>
@@ -1817,6 +1882,22 @@
     </div>
 
     
+    <div id="modalPedidoRapido" class="modal-overlay-custom" onclick="if(event.target===this) cerrarPedidoRapido()">
+        <div class="modal-card-custom">
+            <div class="modal-header-custom">
+                <h3 class="modal-title-custom">⚡ Pedido rápido</h3>
+                <button class="panel-close-btn" onclick="cerrarPedidoRapido()">✕</button>
+            </div>
+            <p class="lr-ayuda">Pega tu lista (de Excel, WhatsApp o un correo): un producto por renglón con el <b>código de barras o el nombre</b> y la <b>cantidad</b>. Ejemplos:<br><code>7501298212456&nbsp;&nbsp;24</code> · <code>paracetamol 500mg x 10</code> · <code>12 ibuprofeno 400</code></p>
+            <textarea id="txtListaRapida" placeholder="Código o nombre     Cantidad"></textarea>
+            <div class="lr-acciones">
+                <button class="btn" type="button" onclick="revisarListaRapida()">🔎 Revisar lista</button>
+                <label class="btn lr-archivo" style="background:var(--bg-input); color:var(--text-main); border:var(--border-glow); box-shadow:none;">📄 Subir Excel o CSV<input type="file" accept=".xlsx,.xls,.csv,.txt" onchange="leerArchivoRapido(this)"></label>
+                <button class="btn" type="button" style="background:var(--bg-input); color:var(--text-main); border:var(--border-glow); box-shadow:none;" onclick="cerrarPedidoRapido(); abrirModalHistorial();">📋 Repetir un pedido anterior</button>
+            </div>
+            <div id="resultadoListaRapida"></div>
+        </div>
+    </div>
     <div id="modalAuth">
         <div class="panel-box">
             <div class="panel-title" id="authTitle" style="justify-content: space-between;">
@@ -1824,6 +1905,7 @@
                 <button class="panel-close-btn" onclick="cerrarModalAuth()">✕</button>
             </div>
             
+            <div id="avisoInvitacion" class="aviso-invitacion" style="display:none;"></div>
             <div id="loginFields" style="margin-top: 10px;">
                 <div class="input-group">
                     <label>Correo Electrónico</label>
@@ -1858,7 +1940,7 @@
             
             <div id="recoverFields" style="display:none; margin-top: 10px;">
                 <div id="recPaso1">
-                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Escribe el correo de tu cuenta y te mandamos un código de 6 dígitos para crear una contraseña nueva.</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Escribe el correo de tu cuenta y te mandamos un código para crear una contraseña nueva.</p>
                     <div class="input-group">
                         <label>Correo Electrónico</label>
                         <input type="email" id="recEmail" placeholder="tucorreo@email.com" onkeydown="if(event.key==='Enter') enviarCodigoRecuperacion()">
@@ -1868,8 +1950,8 @@
                 <div id="recPaso2" style="display:none;">
                     <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Enviamos un código a <b id="lblRecCorreo" style="color:var(--text-main);"></b>. Revisa también tu carpeta de spam.</p>
                     <div class="input-group">
-                        <label>Código de 6 dígitos</label>
-                        <input type="text" id="recCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px; text-align:center; font-size:20px; font-weight:800;">
+                        <label>Código</label>
+                        <input type="text" id="recCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456" style="letter-spacing:6px; text-align:center; font-size:20px; font-weight:800;">
                     </div>
                     <div class="input-group">
                         <label>Contraseña nueva</label>
@@ -1887,10 +1969,10 @@
 
             
             <div id="verifyFields" style="display:none; margin-top: 10px;">
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Enviamos un código de 6 dígitos a <b id="lblCorreoVerificacion" style="color:var(--text-main);"></b>. Escríbelo aquí para activar tu cuenta.</p>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Enviamos un código a <b id="lblCorreoVerificacion" style="color:var(--text-main);"></b>. Escríbelo aquí para activar tu cuenta.</p>
                 <div class="input-group">
                     <label>Código de verificación</label>
-                    <input type="text" id="verifyCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="letter-spacing:6px; text-align:center; font-size:20px; font-weight:800;" onkeydown="if(event.key==='Enter') ejecutarVerificacionCodigo()">
+                    <input type="text" id="verifyCodigo" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456" style="letter-spacing:6px; text-align:center; font-size:20px; font-weight:800;" onkeydown="if(event.key==='Enter') ejecutarVerificacionCodigo()">
                 </div>
                 <button id="btnVerificarCodigo" class="btn btn-success full-width" style="margin-bottom:14px; justify-content:center;" onclick="ejecutarVerificacionCodigo()">Verificar código</button>
                 <p style="font-size:12px; text-align:center; color:var(--text-muted);">¿No te llegó? <a href="#" style="color:var(--primary-light); font-weight:700; text-decoration:none;" onclick="event.preventDefault(); reenviarCodigoVerificacion()">Reenviar código</a> · <a href="#" style="color:var(--primary-light); font-weight:700; text-decoration:none;" onclick="event.preventDefault(); conmutarAuthView(false)">Volver</a></p>
@@ -2017,6 +2099,8 @@
                 const { data, error } = await sb.from("configuracion").select("*").eq("marca", MARCA).maybeSingle();
                 if (error) throw error;
                 if (data) {
+                    cfgTienda = data;
+                    cargarFechasEntrega();
                     configuracionHorarios = {
                         habilitado: data.panico !== true,
                         panico: data.panico === true,
@@ -2190,6 +2274,8 @@
 
             await descargarCatalogo();
             await verificarCacheSesion();
+            if (ES_FH) document.getElementById("barraPedidoRapido").style.display = "flex";
+            revisarInvitacion();
 
             abrirProductoDesdeUrl();
             const folioUrl = new URLSearchParams(location.search).get("folio");
@@ -2498,6 +2584,7 @@
                     + (s.telefono ? `<br>📞 ${esc(s.telefono)}` : "")
                     + `<br>Te avisamos por correo cuando esté <b>listo para recoger</b>. Menciona tu folio en mostrador.`;
             }
+            pintarEntregaMayoreo();
         }
 
         let banners = [], bannerIdx = 0, bannerTimer = null;
@@ -2790,6 +2877,8 @@
 
             document.getElementById("lblSubtotalCart").innerText = `$${subtotal.toFixed(2)}`;
             document.getElementById("lblTotalCart").innerText = `$${totalFinal.toFixed(2)}`;
+            totalCarritoActual = totalFinal;
+            pintarEntregaMayoreo();
 
             const cartBadge = document.getElementById("cartCounter");
             const cartBadgeBottom = document.getElementById("cartCounterBottom");
@@ -3022,6 +3111,8 @@
             if(!sesionUsuario) { showToast("Inicia sesión para hacer tu pedido.", "warning"); return; }
             if(!nom) { showToast("Escribe el nombre del paciente.", "warning"); return; }
             if(!recoger && !dom) { showToast("Escribe el domicilio de entrega o elige recoger en sucursal.", "warning"); return; }
+            const errEntrega = validarEntregaMayoreo(recoger);
+            if(errEntrega) { showToast(errEntrega, "warning", 6000); return; }
             if(Object.keys(carrito).length === 0) { showToast("Tu carrito está vacío.", "warning"); return; }
 
             const necesitaReceta = Object.values(carrito).some(x => {
@@ -3055,7 +3146,8 @@
                     p_cupon: cuponAplicado ? cuponAplicado.codigo : null,
                     p_receta_path: rutaReceta,
                     p_usar_monedero: !!usarMonedero,
-                    p_recoger: recoger
+                    p_recoger: recoger,
+                    p_fecha_entrega: fechaParaPedido(recoger)
                 });
 
                 if (error) {
@@ -3065,7 +3157,7 @@
                     return;
                 }
 
-                showToast(`¡Pedido realizado con éxito!\nFOLIO: ${res.folio}\nSUCURSAL: ${nombreSucursal(res.sucursal)}`, "success", 6000);
+                showToast(`¡Pedido realizado con éxito!\nFOLIO: ${res.folio}\nSUCURSAL: ${nombreSucursal(res.sucursal)}${res.fecha_entrega_texto ? "\nENTREGA: " + res.fecha_entrega_texto : ""}`, "success", 7000);
                 if (ubicacionPedido && !recoger) {
                     try {
                         const { error: eu } = await sb.rpc("fijar_ubicacion_pedido", { p_folio: res.folio, p_lat: ubicacionPedido.lat, p_lng: ubicacionPedido.lng });
@@ -3083,6 +3175,9 @@
                 inputReceta.value = "";
                 cargarMonedero();
                 actualizarGraficosCarrito();
+                fechaEntregaSel = null;
+                cargarFechasEntrega();
+                cargarCuentaPvi();
                 abrirModalRastreo();
                 consultarRastreoInterno();
                 await descargarCatalogo();
@@ -3093,6 +3188,380 @@
                 btnConfirm.disabled = false;
                 btnConfirm.innerText = "🚀 Confirmar y Enviar Pedido";
             }
+        }
+
+        const ES_FH = MARCA === "FARMAHOUSE";
+        let cfgTienda = null;
+        let fechasEntrega = [];
+        let fechaEntregaSel = null;
+        let cuentaPvi = null;
+        let totalCarritoActual = 0;
+        let listaRapida = [];
+
+        function dineroMx(n) { return "$" + Number(n || 0).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        function fechaCorta(f) { if (!f) return ""; const d = new Date(String(f).length <= 10 ? f + "T12:00:00" : f); return d.toLocaleDateString("es-MX", { day: "2-digit", month: "short", year: "numeric" }); }
+
+        async function cargarFechasEntrega() {
+            if (!sb || !cfgTienda || !cfgTienda.entrega_programada) { fechasEntrega = []; pintarEntregaMayoreo(); return; }
+            try {
+                const { data, error } = await sb.rpc("fechas_entrega", { p_marca: MARCA });
+                fechasEntrega = error ? [] : (data || []);
+            } catch (e) { fechasEntrega = []; }
+            if (fechaEntregaSel && !fechasEntrega.some(f => f.fecha === fechaEntregaSel)) fechaEntregaSel = null;
+            pintarEntregaMayoreo();
+        }
+
+        function pintarEntregaMayoreo() {
+            const opDom = document.querySelector('input[name="tipoEntrega"][value="domicilio"]');
+            const opSuc = document.querySelector('input[name="tipoEntrega"][value="sucursal"]');
+            const aviso = document.getElementById("avisoEnvioMinimo");
+            const grupo = document.getElementById("grupoFechaEntrega");
+            if (!opDom || !opSuc || !aviso || !grupo) return;
+            const min = cfgTienda ? Number(cfgTienda.envio_minimo || 0) : 0;
+            const falta = min > 0 ? Math.round((min - totalCarritoActual) * 100) / 100 : 0;
+            const bloqueado = min > 0 && falta > 0;
+            opDom.disabled = bloqueado;
+            opDom.closest(".entrega-op").classList.toggle("bloqueada", bloqueado);
+            const lbl = document.getElementById("lblEnvioDom");
+            if (lbl) lbl.textContent = min > 0 ? (bloqueado ? `Desde ${dineroMx(min)}` : "Entrega programada") : "Te lo llevamos";
+            if (bloqueado && opDom.checked) { opSuc.checked = true; cambiarTipoEntrega(); return; }
+            if (min > 0) {
+                aviso.style.display = "block";
+                aviso.classList.toggle("ok", !bloqueado);
+                aviso.innerHTML = bloqueado
+                    ? `🚚 El envío a domicilio es para pedidos de mayoreo desde <b>${dineroMx(min)}</b>. Te faltan <b>${dineroMx(falta)}</b>. Por ahora puedes recoger en sucursal.`
+                    : `✔ Tu pedido ya tiene envío a domicilio (pedidos desde ${dineroMx(min)}).`;
+            } else {
+                aviso.style.display = "none";
+            }
+            const verFecha = !!(cfgTienda && cfgTienda.entrega_programada) && tipoEntregaActual() === "domicilio";
+            grupo.style.display = verFecha ? "" : "none";
+            if (verFecha) {
+                const sel = document.getElementById("orderFechaEntrega");
+                const nota = document.getElementById("lblFechaEntrega");
+                if (!fechasEntrega.length) {
+                    sel.innerHTML = `<option value="">Sin fechas disponibles</option>`;
+                    nota.textContent = "Por ahora no hay fechas de entrega disponibles. Escríbenos por WhatsApp o elige recoger en sucursal.";
+                } else {
+                    sel.innerHTML = `<option value="">Elige la fecha de entrega</option>` + fechasEntrega.map(f =>
+                        `<option value="${esc(f.fecha)}"${f.fecha === fechaEntregaSel ? " selected" : ""}>${esc(f.texto.charAt(0).toUpperCase() + f.texto.slice(1))}${f.lugares != null && f.lugares <= 3 ? ` · quedan ${f.lugares}` : ""}</option>`).join("");
+                    nota.textContent = "Los pedidos de mayoreo se entregan en la fecha que elijas. Te avisamos por correo si cambia.";
+                }
+            }
+        }
+
+        function elegirFechaEntrega(v) { fechaEntregaSel = v || null; }
+
+        function validarEntregaMayoreo(recoger) {
+            if (recoger || !cfgTienda) return null;
+            const min = Number(cfgTienda.envio_minimo || 0);
+            if (min > 0 && totalCarritoActual < min) return `El envío a domicilio es para pedidos desde ${dineroMx(min)}. Te faltan ${dineroMx(min - totalCarritoActual)}.`;
+            if (cfgTienda.entrega_programada && !fechaEntregaSel) return "Elige la fecha de entrega de tu pedido.";
+            return null;
+        }
+
+        function fechaParaPedido(recoger) { return (!recoger && cfgTienda && cfgTienda.entrega_programada) ? fechaEntregaSel : null; }
+
+        async function cargarCuentaPvi() {
+            if (!ES_FH || !sb || !sesionUsuario) { cuentaPvi = null; pintarCuentaPvi(); pintarMetodoCredito(); return; }
+            try {
+                const { data, error } = await sb.rpc("mi_cuenta_pvi", { p_marca: MARCA });
+                cuentaPvi = error ? null : data;
+            } catch (e) { cuentaPvi = null; }
+            pintarCuentaPvi();
+            pintarMetodoCredito();
+        }
+
+        function pintarMetodoCredito() {
+            const sel = document.getElementById("orderMetodoPago");
+            if (!sel) return;
+            let op = sel.querySelector('option[value="Crédito"]');
+            const cr = cuentaPvi && cuentaPvi.vinculado ? cuentaPvi.credito : null;
+            const ok = cr && Number(cr.vencido) <= 0 && Number(cr.disponible) > 0;
+            if (ok) {
+                if (!op) { op = document.createElement("option"); op.value = "Crédito"; sel.appendChild(op); }
+                op.textContent = `A crédito (disponible ${dineroMx(cr.disponible)})`;
+            } else if (op) {
+                if (sel.value === "Crédito") sel.value = "Efectivo";
+                op.remove();
+            }
+        }
+
+        function pintarCuentaPvi() {
+            const cont = document.getElementById("bloqueCuentaPvi");
+            if (!cont) return;
+            if (!ES_FH || !sesionUsuario) { cont.innerHTML = ""; return; }
+            if (!cuentaPvi || !cuentaPvi.vinculado) {
+                cont.innerHTML = `<div class="pvi-caja">
+                    <b>¿Ya eres cliente de FarmaHouse?</b>
+                    <small>Escribe el código de cliente que te dimos y verás aquí tu crédito, tus compras y tus facturas.</small>
+                    <div class="pvi-fila"><input id="txtCodigoCliente" maxlength="12" placeholder="Código de cliente" autocomplete="off" onkeydown="if(event.key==='Enter') vincularConCodigo()"><button class="btn-mini" type="button" onclick="vincularConCodigo()">Vincular</button></div>
+                </div>`;
+                return;
+            }
+            const c = cuentaPvi.cliente || {}, cr = cuentaPvi.credito;
+            let h = `<div class="pvi-caja"><div class="pvi-cab"><span>🏢</span><div><b>${esc(c.razon_social || c.nombre || "")}</b><small>${c.rfc ? "RFC " + esc(c.rfc) + " · " : ""}Cliente de FarmaHouse</small></div></div>`;
+            if (cr) {
+                h += `<div class="pvi-credito">
+                    <div><small>Límite</small><b>${dineroMx(cr.limite)}</b></div>
+                    <div><small>Saldo</small><b>${dineroMx(cr.saldo)}</b></div>
+                    <div class="destacado"><small>Disponible</small><b>${dineroMx(cr.disponible)}</b></div>
+                    <div class="${Number(cr.vencido) > 0 ? "alerta" : ""}"><small>Vencido</small><b>${dineroMx(cr.vencido)}</b></div>
+                </div>
+                <small class="pvi-nota">Crédito a ${Number(cr.dias || 0)} días.${Number(cr.en_pedidos) > 0 ? ` ${dineroMx(cr.en_pedidos)} apartados en pedidos en línea por cobrar.` : ""}${Number(cr.vencido) > 0 ? ` Tienes ${dineroMx(cr.vencido)} vencido (${cr.dias_vencido} días): liquídalo para volver a comprar a crédito.` : ""}</small>`;
+            } else {
+                h += `<small class="pvi-nota">Tu cuenta no tiene crédito autorizado. Si lo necesitas, pídelo a FarmaHouse.</small>`;
+            }
+            const pend = cuentaPvi.pendientes || [];
+            if (pend.length) {
+                h += `<details class="pvi-det" open><summary>Documentos por pagar (${pend.length})</summary><table class="pvi-tabla"><tr><th>Folio</th><th>Vence</th><th>Pendiente</th></tr>` +
+                    pend.map(p => `<tr class="${p.vencido ? "vencido" : ""}"><td>${esc(p.folio)}</td><td>${fechaCorta(p.vence)}</td><td>${dineroMx(p.pendiente)}</td></tr>`).join("") + `</table></details>`;
+            }
+            const ab = cuentaPvi.abonos || [];
+            if (ab.length) {
+                h += `<details class="pvi-det"><summary>Mis abonos</summary><table class="pvi-tabla"><tr><th>Fecha</th><th>Forma</th><th>Monto</th></tr>` +
+                    ab.map(a => `<tr><td>${fechaCorta(a.fecha)}</td><td>${esc(String(a.metodo || "").toLowerCase())}</td><td>${dineroMx(a.monto)}</td></tr>`).join("") + `</table></details>`;
+            }
+            const co = cuentaPvi.compras || [];
+            h += `<details class="pvi-det"><summary>Mis compras (${co.length})</summary>` + (co.length
+                ? `<table class="pvi-tabla"><tr><th>Folio</th><th>Fecha</th><th>Total</th></tr>` + co.map(v => `<tr><td>${esc(v.folio)}${v.en_linea ? " 🌐" : ""}<small>${esc(String(v.metodo || "").toLowerCase())}${v.estado === "PENDIENTE" ? " · por cobrar" : ""}</small></td><td>${fechaCorta(v.fecha)}</td><td>${dineroMx(v.total)}</td></tr>`).join("") + `</table>`
+                : `<small class="pvi-nota">Aún no hay compras registradas.</small>`) + `</details>`;
+            const fa = cuentaPvi.facturas || [];
+            h += `<details class="pvi-det"><summary>Mis facturas (${fa.length})</summary>` + (fa.length
+                ? `<table class="pvi-tabla"><tr><th>Factura</th><th>Total</th><th></th></tr>` + fa.map(f => `<tr><td>${esc((f.serie || "") + (f.folio || ""))}<small>${fechaCorta(f.fecha)}${f.estado === "CANCELADA" ? " · cancelada" : ""}</small></td><td>${dineroMx(f.total)}</td><td><button class="btn-mini" type="button" onclick="descargarXml(${Number(f.id)})">XML</button></td></tr>`).join("") + `</table><small class="pvi-nota">¿Necesitas el PDF? Pídelo por WhatsApp.</small>`
+                : `<small class="pvi-nota">Aún no hay facturas.</small>`) + `</details>`;
+            h += `</div>`;
+            cont.innerHTML = h;
+        }
+
+        async function vincularConCodigo(codigo) {
+            const inp = document.getElementById("txtCodigoCliente");
+            const cod = String(codigo || (inp ? inp.value : "")).trim().toUpperCase();
+            if (!cod) { showToast("Escribe tu código de cliente.", "warning"); return false; }
+            try {
+                const { data, error } = await sb.rpc("vincular_cliente", { p_codigo: cod, p_marca: MARCA });
+                if (error) throw error;
+                cuentaPvi = data;
+                pintarCuentaPvi();
+                pintarMetodoCredito();
+                showToast("¡Listo! Tu cuenta quedó vinculada con tu cuenta de cliente.", "success", 5000);
+                return true;
+            } catch (e) {
+                showToast(e.message || "No se pudo vincular tu cuenta.", "danger", 6000);
+                return false;
+            }
+        }
+
+        async function descargarXml(id) {
+            try {
+                const { data, error } = await sb.rpc("factura_xml", { p_id: id });
+                if (error) throw error;
+                const url = URL.createObjectURL(new Blob([data.xml || ""], { type: "application/xml" }));
+                const a = document.createElement("a");
+                a.href = url; a.download = data.nombre || "factura.xml";
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+            } catch (e) { showToast(e.message || "No se pudo descargar la factura.", "danger"); }
+        }
+
+        async function revisarInvitacion() {
+            if (!ES_FH || !sb) return;
+            const params = new URLSearchParams(location.search);
+            let cod = params.get("invitacion");
+            if (cod) {
+                try { sessionStorage.setItem("fh_invitacion", cod.trim().toUpperCase()); } catch (e) {}
+                try { history.replaceState(null, "", location.pathname); } catch (e) {}
+            } else {
+                try { cod = sessionStorage.getItem("fh_invitacion"); } catch (e) {}
+            }
+            if (!cod) return;
+            let info = null;
+            try { const { data } = await sb.rpc("invitacion_info", { p_codigo: cod }); info = data; } catch (e) {}
+            if (!info || !info.valida) {
+                try { sessionStorage.removeItem("fh_invitacion"); } catch (e) {}
+                showToast((info && info.error) || "La invitación no es válida.", "warning", 7000);
+                return;
+            }
+            if (sesionUsuario) { await vincularPendiente(); return; }
+            conmutarAuthView(true);
+            document.getElementById("modalAuth").style.display = "flex";
+            document.getElementById("regNombre").value = info.nombre || "";
+            if (info.correo) {
+                document.getElementById("regEmail").value = info.correo;
+                document.getElementById("loginEmail").value = info.correo;
+            }
+            ponerTituloAuth("👋 Bienvenido, crea tu contraseña");
+            const av = document.getElementById("avisoInvitacion");
+            if (av) {
+                av.style.display = "block";
+                av.innerHTML = `Hola <b>${esc(String(info.nombre || "").split(" ")[0])}</b>: crea tu contraseña para entrar a la tienda de FarmaHouse. Al terminar, tu cuenta quedará ligada a tu cuenta de cliente y podrás ver tu crédito.<br><small>¿Ya tienes cuenta en la tienda? <a href="#" onclick="event.preventDefault(); conmutarAuthView(false);">Inicia sesión</a> y se vincula sola.</small>`;
+            }
+        }
+
+        async function vincularPendiente() {
+            let cod = null;
+            try { cod = sessionStorage.getItem("fh_invitacion"); } catch (e) {}
+            if (!cod || !sesionUsuario) return;
+            const ok = await vincularConCodigo(cod);
+            try { sessionStorage.removeItem("fh_invitacion"); } catch (e) {}
+            const av = document.getElementById("avisoInvitacion");
+            if (av) av.style.display = "none";
+            if (ok) abrirModalPerfil();
+        }
+
+        async function despuesDeEntrar() {
+            if (!ES_FH) return;
+            await vincularPendiente();
+            await cargarCuentaPvi();
+        }
+
+        function abrirPedidoRapido() {
+            if (!sesionUsuario) { showToast("Inicia sesión para usar el pedido rápido.", "warning"); abrirModalAuth(); return; }
+            document.getElementById("modalPedidoRapido").classList.add("active");
+            setTimeout(() => document.getElementById("txtListaRapida").focus(), 60);
+        }
+        function cerrarPedidoRapido() { document.getElementById("modalPedidoRapido").classList.remove("active"); }
+
+        function partirRenglon(linea) {
+            let s = String(linea || "").replace(/ /g, " ").trim();
+            if (!s) return null;
+            let celdas = s.split(/\t|;|\|/).map(x => x.trim()).filter(Boolean);
+            if (celdas.length === 1 && /,/.test(s) && !/\d,\d{3}\b/.test(s)) celdas = s.split(",").map(x => x.trim()).filter(Boolean);
+            if (celdas.length > 1) {
+                let iCant = -1;
+                for (let i = celdas.length - 1; i >= 0; i--) { if (/^\d{1,5}([.,]0+)?$/.test(celdas[i])) { iCant = i; break; } }
+                if (iCant >= 0) {
+                    const cant = parseInt(celdas[iCant], 10);
+                    const texto = celdas.filter((_, i) => i !== iCant).sort((a, b) => (/^\d{6,}$/.test(b) ? 1 : 0) - (/^\d{6,}$/.test(a) ? 1 : 0))[0];
+                    return { texto, cantidad: cant };
+                }
+                return { texto: celdas[0], cantidad: 1 };
+            }
+            let m = s.match(/^(.*\S)\s*[x×*]\s*(\d{1,5})$/i) || s.match(/^(.*\S)\s+(\d{1,5})\s*(pzas?|piezas?|cajas?|pz)?$/i);
+            if (m) return { texto: m[1].trim(), cantidad: parseInt(m[2], 10) };
+            m = s.match(/^(\d{1,4})\s*[x×*]?\s+(.*[a-záéíóúñ].*)$/i);
+            if (m) return { texto: m[2].trim(), cantidad: parseInt(m[1], 10) };
+            return { texto: s, cantidad: 1 };
+        }
+
+        function leerLineasTexto(texto) {
+            return String(texto || "").split(/\r?\n/).map(partirRenglon).filter(x => x && x.texto && !/^(c[oó]digo|clave|producto|art[ií]culo|descripci[oó]n)$/i.test(x.texto));
+        }
+
+        function cargarScript(src) {
+            return new Promise((ok, mal) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => mal(new Error("No se pudo cargar el lector de Excel")); document.head.appendChild(s); });
+        }
+
+        async function leerArchivoRapido(input) {
+            const f = input.files && input.files[0];
+            if (!f) return;
+            try {
+                let texto = "";
+                if (/\.(xlsx|xls)$/i.test(f.name)) {
+                    if (!window.XLSX) await cargarScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js");
+                    const libro = window.XLSX.read(await f.arrayBuffer(), { type: "array" });
+                    const hoja = libro.Sheets[libro.SheetNames[0]];
+                    const filas = window.XLSX.utils.sheet_to_json(hoja, { header: 1, raw: false, defval: "" });
+                    texto = filas.map(r => r.map(c => String(c).trim()).filter(Boolean).join("\t")).filter(Boolean).join("\n");
+                } else {
+                    texto = await f.text();
+                }
+                document.getElementById("txtListaRapida").value = texto;
+                await revisarListaRapida();
+            } catch (e) { showToast(e.message || "No se pudo leer el archivo.", "danger"); }
+            input.value = "";
+        }
+
+        async function revisarListaRapida() {
+            const lineas = leerLineasTexto(document.getElementById("txtListaRapida").value);
+            const cont = document.getElementById("resultadoListaRapida");
+            if (!lineas.length) { showToast("Pega tu lista: un producto por renglón con su cantidad.", "warning"); return; }
+            if (lineas.length > 400) { showToast("Máximo 400 renglones por lista.", "warning"); return; }
+            cont.innerHTML = `<div style="padding:14px; text-align:center;"><span class="spinner" style="border-top-color:var(--primary);"></span> Buscando ${lineas.length} productos...</div>`;
+            try {
+                const { data, error } = await sb.rpc("resolver_lista", { p_sucursal: sucursalSeleccionada, p_lineas: lineas });
+                if (error) throw error;
+                listaRapida = (data || []).filter(r => r.estado !== "vacio").map(r => {
+                    const opciones = (r.opciones || []).map(o => dbProductos.find(p => p.codigo === o.codigo)).filter(Boolean);
+                    const unica = [...new Map(opciones.map(p => [p.codigo, p])).values()];
+                    return { texto: r.texto, cantidad: r.cantidad, opciones: unica, codigo: unica.length === 1 ? unica[0].codigo : "" };
+                });
+                pintarListaRapida();
+            } catch (e) {
+                cont.innerHTML = "";
+                showToast(e.message || "No se pudo revisar la lista.", "danger");
+            }
+        }
+
+        function precioRapido(p, cant) {
+            const may = Number(p.precio_mayoreo) > 0 && Number(p.cantidad_mayoreo) > 1 && cant >= Number(p.cantidad_mayoreo);
+            return may ? Number(p.precio_mayoreo) : Number(p.precio) || 0;
+        }
+
+        function pintarListaRapida() {
+            const cont = document.getElementById("resultadoListaRapida");
+            let total = 0, listos = 0;
+            const filas = listaRapida.map((r, i) => {
+                const p = r.opciones.find(o => o.codigo === r.codigo);
+                let estado, celdaProd;
+                if (r.opciones.length > 1 && !r.codigo) {
+                    estado = `<span class="lr-estado varios">Elige</span>`;
+                } else if (!r.opciones.length) {
+                    estado = `<span class="lr-estado no">No encontrado</span>`;
+                }
+                if (r.opciones.length > 1) {
+                    celdaProd = `<select onchange="elegirOpcionRapida(${i}, this.value)"><option value="">Varios parecidos: elige uno</option>` +
+                        r.opciones.map(o => `<option value="${esc(o.codigo)}"${o.codigo === r.codigo ? " selected" : ""}>${esc(o.nombre)} · ${dineroMx(o.precio)}</option>`).join("") + `</select>`;
+                } else if (r.opciones.length === 1) {
+                    celdaProd = `<b>${esc(r.opciones[0].nombre)}</b>`;
+                } else {
+                    celdaProd = `<small>Revisa el código o el nombre, o pídelo por WhatsApp.</small>`;
+                }
+                let precioTxt = "", importe = 0;
+                if (p) {
+                    const stock = Number(p.stock) || 0;
+                    if (r.cantidad > stock) { r.cantidad = stock; estado = `<span class="lr-estado poco">Solo hay ${stock}</span>`; }
+                    if (stock <= 0) estado = `<span class="lr-estado no">Agotado</span>`;
+                    const unit = precioRapido(p, r.cantidad);
+                    importe = unit * r.cantidad;
+                    if (r.cantidad > 0) { total += importe; listos++; }
+                    precioTxt = dineroMx(unit) + (unit < Number(p.precio) ? `<small class="lr-may">mayoreo</small>` : (Number(p.cantidad_mayoreo) > 1 && Number(p.precio_mayoreo) > 0 ? `<small>${dineroMx(p.precio_mayoreo)} desde ${p.cantidad_mayoreo}</small>` : ""));
+                    if (!estado) estado = `<span class="lr-estado ok">✔</span>`;
+                }
+                return `<tr><td class="lr-texto">${esc(r.texto)}</td><td>${celdaProd}</td>
+                    <td><input type="number" min="0" value="${r.cantidad}" onchange="cambiarCantidadRapida(${i}, this.value)"${p ? "" : " disabled"}></td>
+                    <td class="lr-num">${precioTxt}</td><td class="lr-num">${p ? dineroMx(importe) : ""}</td><td>${estado || ""}</td></tr>`;
+            }).join("");
+            const sinEncontrar = listaRapida.filter(r => !r.opciones.length).length;
+            cont.innerHTML = `<div class="lr-tabla-caja"><table class="lr-tabla"><tr><th>Tu lista</th><th>Producto</th><th>Cant.</th><th>Precio</th><th>Importe</th><th></th></tr>${filas}</table></div>
+                <div class="lr-pie"><div><b>${listos}</b> productos listos · Total aprox. <b>${dineroMx(total)}</b>${sinEncontrar ? `<br><small>${sinEncontrar} renglón(es) sin encontrar.</small>` : ""}</div>
+                <button class="btn btn-success" type="button" onclick="agregarListaRapida()"${listos ? "" : " disabled"}>🛒 Agregar ${listos} al carrito</button></div>`;
+        }
+
+        function elegirOpcionRapida(i, codigo) { listaRapida[i].codigo = codigo; pintarListaRapida(); }
+        function cambiarCantidadRapida(i, v) { listaRapida[i].cantidad = Math.max(0, parseInt(v, 10) || 0); pintarListaRapida(); }
+
+        function agregarListaRapida() {
+            if (!sesionUsuario) { abrirModalAuth(); return; }
+            let n = 0;
+            listaRapida.forEach(r => {
+                const p = r.opciones.find(o => o.codigo === r.codigo);
+                if (!p || r.cantidad <= 0) return;
+                const stock = Number(p.stock) || 0;
+                const actual = carrito[p.codigo] ? carrito[p.codigo].qty : 0;
+                const qty = Math.min(stock, actual + r.cantidad);
+                if (qty <= 0) return;
+                carrito[p.codigo] = { code: p.codigo, name: p.nombre, price: Number(p.precio) || 0, qty };
+                n++;
+            });
+            if (!n) { showToast("No hay productos listos para agregar.", "warning"); return; }
+            actualizarGraficosCarrito();
+            cerrarPedidoRapido();
+            listaRapida = [];
+            document.getElementById("txtListaRapida").value = "";
+            document.getElementById("resultadoListaRapida").innerHTML = "";
+            showToast(`Se agregaron ${n} productos a tu carrito.`, "success");
+            abrirCarrito();
         }
 
         function construirGraficoTicket(res, nom, dom) {
@@ -3557,6 +4026,7 @@
             pintarUbicacionPerfil();
             document.getElementById("modalPerfil").classList.add("active");
             cargarMonedero();
+            cargarCuentaPvi();
         }
         function cerrarModalPerfil() { document.getElementById("modalPerfil").classList.remove("active"); }
 
@@ -3640,6 +4110,9 @@
             monederoInfo = null;
             usarMonedero = false;
             renderMonedero();
+            cuentaPvi = null;
+            pintarCuentaPvi();
+            pintarMetodoCredito();
             historialCache = {};
             detenerRastreoEnVivo();
             actualizarGraficosCarrito();
@@ -3726,7 +4199,7 @@
         async function confirmarRecuperacion() {
             const codigo = document.getElementById("recCodigo").value.replace(/\D/g, "");
             const p1 = document.getElementById("recPass1").value, p2 = document.getElementById("recPass2").value;
-            if (codigo.length < 6) { showToast("Escribe el código de 6 dígitos que llegó a tu correo.", "warning"); return; }
+            if (codigo.length < 6) { showToast("Escribe el código que llegó a tu correo.", "warning"); return; }
             const err = validarNueva(p1, p2);
             if (err) { showToast(err, "warning"); return; }
             const btn = document.getElementById("btnConfirmarRec");
@@ -3801,6 +4274,7 @@
                 lat: perfil ? perfil.lat : null,
                 lng: perfil ? perfil.lng : null
             });
+            despuesDeEntrar();
         }
 
         async function ejecutarIngresoBase() {
@@ -3870,7 +4344,7 @@
                     showToast("¡Cuenta creada exitosamente!", "success");
                     cerrarModalAuth();
                 } else {
-                    showToast("Te enviamos un código de 6 dígitos a tu correo.", "info", 6000);
+                    showToast("Te enviamos un código a tu correo.", "info", 6000);
                     mostrarVerificacion(em);
                 }
             } catch(e) { showToast("Error al registrarse: " + e.message, "danger"); }
@@ -3883,7 +4357,7 @@
         async function ejecutarVerificacionCodigo() {
             const codigo = document.getElementById("verifyCodigo").value.replace(/\D/g, "");
             const btn = document.getElementById("btnVerificarCodigo");
-            if (codigo.length < 6) { showToast("Escribe el código de 6 dígitos que llegó a tu correo.", "warning"); return; }
+            if (codigo.length < 6) { showToast("Escribe el código que llegó a tu correo.", "warning"); return; }
 
             btn.disabled = true;
             btn.innerHTML = `<span class="spinner"></span> Verificando...`;
