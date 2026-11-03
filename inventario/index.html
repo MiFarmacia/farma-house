@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08704a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex">
+<title>Inventario · PVI Farma</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --p:#08704a; --p2:#065c3d; --pc:#e6f4ee;
+    --fondo:#f2f4f7; --carta:#ffffff; --texto:#1d2939; --mut:#667085; --borde:#e4e7ec;
+    --rojo:#b42318; --rojoc:#fdecec; --ambar:#b54708; --ambarc:#fdf0dc;
+  }
+  body.fh{ --p:#194e9e; --p2:#123b78; --pc:#e8effa; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; background:var(--fondo); color:var(--texto); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  body{ min-height:100vh; padding-bottom:calc(20px + env(safe-area-inset-bottom)); }
+  button,input,select{ font-family:inherit; }
+  .top{ position:sticky; top:0; z-index:20; background:var(--p); color:#fff; padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+        display:flex; align-items:center; gap:10px; box-shadow:0 4px 14px -6px rgba(0,0,0,.35); }
+  .top h1{ font-size:17px; margin:0; font-weight:800; line-height:1.15; }
+  .top small{ display:block; font-size:11.5px; opacity:.85; font-weight:600; }
+  .top .sp{ flex:1; }
+  .top button{ background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:7px 10px; font-size:13px; font-weight:700; }
+  main{ max-width:560px; margin:0 auto; padding:12px; }
+  .carta{ background:var(--carta); border:1px solid var(--borde); border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:0 6px 18px -14px rgba(16,24,40,.4); }
+  h2{ font-size:18px; margin:0 0 6px; }
+  p{ margin:6px 0; }
+  .mut{ color:var(--mut); font-size:14px; }
+  label{ display:block; font-size:12px; font-weight:800; color:var(--mut); margin:12px 0 6px; text-transform:uppercase; letter-spacing:.04em; }
+  input,select{ width:100%; padding:13px 14px; border-radius:12px; border:1px solid #d0d5dd; background:#fff; font-size:16px; color:var(--texto); outline:none; }
+  input:focus,select:focus{ border-color:var(--p); box-shadow:0 0 0 3px var(--pc); }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:0; border-radius:14px; padding:15px; font-size:16px; font-weight:800;
+        background:var(--p); color:#fff; cursor:pointer; margin-top:12px; }
+  .btn:active{ transform:scale(.985); }
+  .btn[disabled]{ opacity:.55; }
+  .btn.sec{ background:#fff; color:var(--p); border:2px solid var(--p); }
+  .btn.peligro{ background:#fff; color:var(--rojo); border:2px solid #f3b4ad; }
+  .fila{ display:flex; gap:8px; }
+  .fila > *{ flex:1; }
+  .aviso{ border-radius:12px; padding:10px 12px; font-size:14px; font-weight:600; margin-top:10px; }
+  .aviso.mal{ background:var(--rojoc); color:var(--rojo); }
+  .aviso.bien{ background:var(--pc); color:var(--p2); }
+  .aviso.medio{ background:var(--ambarc); color:var(--ambar); }
+  .oculto{ display:none !important; }
+  .camara{ position:relative; background:#000; border-radius:16px; overflow:hidden; aspect-ratio:4/3; margin-bottom:10px; }
+  .camara video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .marco{ position:absolute; left:10%; right:10%; top:32%; bottom:32%; border:3px solid rgba(255,255,255,.85); border-radius:12px; box-shadow:0 0 0 9999px rgba(0,0,0,.25); pointer-events:none; }
+  .marco.ok{ border-color:#5fd38d; }
+  .camara .controles{ position:absolute; right:8px; top:8px; display:flex; gap:6px; }
+  .camara .controles button{ background:rgba(0,0,0,.55); color:#fff; border:1px solid rgba(255,255,255,.3); border-radius:10px; padding:7px 10px; font-size:13px; font-weight:700; }
+  .camara .msg{ position:absolute; left:0; right:0; bottom:8px; text-align:center; color:#fff; font-size:13px; font-weight:600; text-shadow:0 1px 3px #000; }
+  .ultimo{ border-radius:16px; padding:14px; background:var(--carta); border:2px solid var(--borde); margin-bottom:10px; }
+  .ultimo.ok{ border-color:var(--p); background:var(--pc); }
+  .ultimo.mal{ border-color:#f3b4ad; background:var(--rojoc); }
+  .ultimo .nom{ font-size:16px; font-weight:800; line-height:1.25; }
+  .ultimo .cod{ font-size:12.5px; color:var(--mut); margin-top:2px; }
+  .ultimo .total{ display:flex; align-items:baseline; gap:8px; margin-top:8px; }
+  .ultimo .total b{ font-size:34px; line-height:1; }
+  .ultimo .sis{ font-size:13px; color:var(--mut); }
+  .botones{ display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:8px; margin-top:10px; }
+  .botones button{ border:0; border-radius:12px; padding:13px 6px; font-size:17px; font-weight:800; background:#fff; color:var(--texto); border:1px solid #d0d5dd; }
+  .botones button.mas{ background:var(--p); color:#fff; border-color:var(--p); }
+  .manual{ display:flex; gap:8px; }
+  .manual input{ flex:1; }
+  .manual button{ flex:0 0 auto; border:0; border-radius:12px; padding:0 16px; font-weight:800; background:var(--p); color:#fff; font-size:15px; }
+  .lista{ list-style:none; padding:0; margin:0; }
+  .lista li{ display:flex; align-items:center; gap:10px; padding:11px 2px; border-bottom:1px solid var(--borde); }
+  .lista li:last-child{ border-bottom:0; }
+  .lista .n{ flex:1; min-width:0; }
+  .lista .n b{ display:block; font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .lista .n small{ color:var(--mut); font-size:12px; }
+  .lista .c{ font-size:20px; font-weight:800; min-width:44px; text-align:right; }
+  .resumen{ display:flex; gap:8px; }
+  .resumen div{ flex:1; background:var(--pc); color:var(--p2); border-radius:12px; padding:10px; text-align:center; }
+  .resumen b{ display:block; font-size:22px; }
+  .resumen small{ font-size:12px; font-weight:700; }
+  .pend{ background:var(--ambarc); color:var(--ambar); border-radius:10px; padding:8px 10px; font-size:13px; font-weight:700; margin-bottom:10px; }
+  .modal{ position:fixed; inset:0; background:rgba(16,24,40,.55); z-index:50; display:flex; align-items:flex-end; justify-content:center; }
+  .modal .hoja{ background:#fff; width:100%; max-width:560px; border-radius:20px 20px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); max-height:85vh; overflow:auto; }
+  .modal h3{ margin:0 0 4px; font-size:17px; }
+  .resultados button{ display:block; width:100%; text-align:left; background:#fff; border:1px solid var(--borde); border-radius:12px; padding:11px 12px; margin-top:8px; font-size:14.5px; }
+  .resultados button small{ display:block; color:var(--mut); font-size:12px; margin-top:2px; }
+  .toast{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom)); background:#1d2939; color:#fff; padding:11px 16px; border-radius:12px;
+          font-size:14px; font-weight:600; z-index:60; max-width:90vw; box-shadow:0 8px 24px -8px rgba(0,0,0,.5); }
+  .toast.mal{ background:var(--rojo); }
+  .grande{ font-size:28px; text-align:center; font-weight:800; letter-spacing:.02em; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1 id="titulo">Inventario</h1>
+    <small id="subtitulo">Conteo físico desde el celular</small>
+  </div>
+  <div class="sp"></div>
+  <button id="btnSalir" class="oculto" onclick="salir()">Salir</button>
+</header>
+<main>
+  <section id="vLogin" class="carta">
+    <h2>Entrar</h2>
+    <p class="mut">Usa el mismo usuario y contraseña del sistema PVI Farma.</p>
+    <label for="usuario">Usuario</label>
+    <input id="usuario" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <label for="contrasena">Contraseña</label>
+    <input id="contrasena" type="password" autocomplete="current-password">
+    <button class="btn" id="btnEntrar" onclick="entrar()">Entrar</button>
+    <div id="errLogin" class="aviso mal oculto"></div>
+  </section>
+
+  <section id="vInicio" class="oculto">
+    <div class="carta">
+      <h2 id="saludo">Hola</h2>
+      <div id="bloqueSucursal" class="oculto">
+        <label for="sucursal">Sucursal</label>
+        <select id="sucursal" onchange="cambiarSucursal()"></select>
+      </div>
+      <p class="mut" id="txtSucursal"></p>
+    </div>
+    <div class="carta" id="cartaConteo">
+      <p class="mut">Buscando conteo…</p>
+    </div>
+  </section>
+
+  <section id="vContar" class="oculto">
+    <div id="pendientes" class="pend oculto"></div>
+    <div class="camara" id="camara">
+      <video id="video" playsinline muted></video>
+      <div class="marco" id="marco"></div>
+      <div class="controles">
+        <button id="btnLinterna" class="oculto" onclick="linterna()">Linterna</button>
+        <button id="btnCamara" onclick="alternarCamara()">Pausar</button>
+      </div>
+      <div class="msg" id="msgCamara">Apunta al código de barras</div>
+    </div>
+
+    <div class="ultimo" id="ultimo">
+      <div class="nom" id="ultNombre">Escanea un producto</div>
+      <div class="cod" id="ultCodigo">Cada escaneo suma 1 pieza</div>
+      <div class="total oculto" id="ultTotalCaja"><b id="ultTotal">0</b><span>piezas contadas</span></div>
+      <div class="sis oculto" id="ultSistema"></div>
+      <div class="botones oculto" id="ultBotones">
+        <button onclick="ajustarUltimo(-1)">−1</button>
+        <button class="mas" onclick="ajustarUltimo(1)">+1</button>
+        <button onclick="pedirCantidad()">Cantidad…</button>
+      </div>
+    </div>
+
+    <div class="carta">
+      <div class="manual">
+        <input id="manual" placeholder="Código o nombre del producto" enterkeyhint="search" autocomplete="off">
+        <button onclick="buscarManual()">Buscar</button>
+      </div>
+    </div>
+
+    <div class="carta">
+      <div class="resumen">
+        <div><b id="resProductos">0</b><small>productos</small></div>
+        <div><b id="resPiezas">0</b><small>piezas</small></div>
+      </div>
+      <ul class="lista" id="lista"></ul>
+      <p class="mut oculto" id="listaVacia">Todavía no has escaneado nada.</p>
+    </div>
+
+    <button class="btn" onclick="terminar()">Terminar mi conteo</button>
+    <button class="btn sec" onclick="volverInicio()">Volver</button>
+  </section>
+
+  <section id="vListo" class="oculto">
+    <div class="carta">
+      <h2>¡Listo!</h2>
+      <p id="txtListo"></p>
+      <p class="mut">El encargado lo verá en el sistema, en Inventario físico, para revisar las diferencias y actualizar el inventario.</p>
+      <button class="btn" onclick="volverInicio()">Seguir contando</button>
+    </div>
+  </section>
+</main>
+
+<div class="modal oculto" id="modal" onclick="if(event.target===this) cerrarModal()">
+  <div class="hoja" id="hoja"></div>
+</div>
+<div class="toast oculto" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://mcqgvzaoaaqujledrxop.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jcWd2emFvYWFxdWpsZWRyeG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NDExODEsImV4cCI6MjEwODAxNzE4MX0.tHe7728Jb7xWXFEPcFAlnW1vdIZ7oF4AXUj9TTEjBBg';
+const DOMINIO = '@pvifarma.local';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, storageKey: 'pvi-inventario' } });
+
+const esFH = /farma-?house/i.test(location.hostname) || /[?&]marca=fh/i.test(location.search);
+if (esFH) {
+  document.body.classList.add('fh');
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#194e9e');
+}
+
+let perfil = null;
+let sucursal = null;
+let sucursales = [];
+let conteo = null;
+let sesion = null;
+let ultimo = null;
+let lineas = [];
+let flujo = null;
+let detector = null;
+let lectorZx = null;
+let pausada = false;
+let ultimoCodigo = '';
+let ultimoMomento = 0;
+let cola = [];
+let enviando = false;
+let refrescoLista = null;
+
+function $(id) { return document.getElementById(id); }
+function mostrar(vista) {
+  for (const v of ['vLogin', 'vInicio', 'vContar', 'vListo']) $(v).classList.toggle('oculto', v !== vista);
+  $('btnSalir').classList.toggle('oculto', vista === 'vLogin');
+  if (vista !== 'vContar') detenerCamara();
+}
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+let tToast = null;
+function toast(texto, mal) {
+  const t = $('toast');
+  t.textContent = texto;
+  t.classList.toggle('mal', !!mal);
+  t.classList.remove('oculto');
+  clearTimeout(tToast);
+  tToast = setTimeout(() => t.classList.add('oculto'), mal ? 4200 : 2200);
+}
+function guardar(clave, valor) { try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {} }
+function leer(clave, def) { try { const v = localStorage.getItem(clave); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
+
+async function rpc(nombre, datos) {
+  const { data, error } = await sb.rpc(nombre, datos || {});
+  if (error) {
+    const e = new Error(error.message || 'Error');
+    e.red = !error.code && /fetch|network|Failed/i.test(error.message || '');
+    throw e;
+  }
+  return data;
+}
+
+let audio = null;
+function pitar(bien) {
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = bien ? 1250 : 320;
+    o.type = 'square';
+    g.gain.value = 0.06;
+    o.connect(g); g.connect(audio.destination);
+    o.start(); o.stop(audio.currentTime + (bien ? 0.08 : 0.25));
+  } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate(bien ? 40 : [80, 60, 80]);
+}
+
+async function entrar() {
+  const u = $('usuario').value.trim().toLowerCase();
+  const c = $('contrasena').value;
+  $('errLogin').classList.add('oculto');
+  if (!u || !c) { $('errLogin').textContent = 'Escribe tu usuario y contraseña.'; $('errLogin').classList.remove('oculto'); return; }
+  $('btnEntrar').disabled = true;
+  $('btnEntrar').textContent = 'Entrando…';
+  const correo = u.includes('@') ? u : u + DOMINIO;
+  const { error } = await sb.auth.signInWithPassword({ email: correo, password: c });
+  $('btnEntrar').disabled = false;
+  $('btnEntrar').textContent = 'Entrar';
+  if (error) {
+    $('errLogin').textContent = /invalid/i.test(error.message) ? 'Usuario o contraseña incorrectos.' : error.message;
+    $('errLogin').classList.remove('oculto');
+    return;
+  }
+  guardar('inv_usuario', u);
+  $('contrasena').value = '';
+  await cargarPerfil();
+}
+
+async function salir() {
+  detenerCamara();
+  await sb.auth.signOut();
+  perfil = null; conteo = null; sesion = null;
+  mostrar('vLogin');
+}
+
+async function cargarPerfil() {
+  const { data: s } = await sb.auth.getSession();
+  if (!s || !s.session) { mostrar('vLogin'); return; }
+  const uid = s.session.user.id;
+  const { data, error } = await sb.from('usuarios').select('id,usuario,nombre,rol,activo,sucursal_id').eq('id', uid).maybeSingle();
+  if (error || !data) { toast('No se pudo leer tu usuario: ' + (error ? error.message : 'no existe'), true); await sb.auth.signOut(); mostrar('vLogin'); return; }
+  if (!data.activo) { toast('Tu usuario está desactivado.', true); await sb.auth.signOut(); mostrar('vLogin'); return; }
+  perfil = data;
+  const { data: lista } = await sb.from('sucursales').select('id,clave,nombre,tipo').eq('activa', true).order('clave');
+  sucursales = (lista || []).filter(x => !perfil.sucursal_id || x.id === perfil.sucursal_id);
+  if (perfil.sucursal_id && sucursales.length === 0) sucursales = [{ id: perfil.sucursal_id, clave: '', nombre: 'Mi sucursal', tipo: '' }];
+  const guardada = leer('inv_sucursal', null);
+  sucursal = sucursales.find(x => x.id === guardada) || sucursales[0] || null;
+  $('saludo').textContent = 'Hola, ' + (perfil.nombre || perfil.usuario).split(' ')[0];
+  const sel = $('sucursal');
+  sel.innerHTML = sucursales.map(x => `<option value="${x.id}">${esc(x.clave)} · ${esc(x.nombre)}</option>`).join('');
+  if (sucursal) sel.value = sucursal.id;
+  $('bloqueSucursal').classList.toggle('oculto', sucursales.length <= 1);
+  mostrar('vInicio');
+  pintarSucursal();
+  await cargarConteo();
+}
+
+function pintarSucursal() {
+  $('txtSucursal').textContent = sucursal ? 'Sucursal ' + sucursal.clave + ' · ' + sucursal.nombre : 'Sin sucursal asignada';
+  $('subtitulo').textContent = sucursal ? sucursal.clave + ' · ' + sucursal.nombre : 'Conteo físico desde el celular';
+  if (sucursal && sucursal.tipo === 'FARMAHOUSE') document.body.classList.add('fh');
+  else if (!esFH) document.body.classList.remove('fh');
+}
+
+async function cambiarSucursal() {
+  sucursal = sucursales.find(x => x.id === $('sucursal').value) || null;
+  guardar('inv_sucursal', sucursal ? sucursal.id : null);
+  pintarSucursal();
+  await cargarConteo();
+}
+
+async function cargarConteo() {
+  const c = $('cartaConteo');
+  c.innerHTML = '<p class="mut">Buscando conteo…</p>';
+  conteo = null;
+  if (!sucursal) { c.innerHTML = '<p class="mut">No tienes sucursal asignada.</p>'; return; }
+  try {
+    conteo = await rpc('conteo_activo', { p_sucursal: sucursal.id });
+  } catch (e) {
+    c.innerHTML = `<div class="aviso mal">${esc(e.message)}</div><button class="btn sec" onclick="cargarConteo()">Reintentar</button>`;
+    return;
+  }
+  if (!conteo) {
+    c.innerHTML = `
+      <h2>No hay conteo abierto</h2>
+      <p class="mut">Para contar, primero se abre un conteo. Si eres encargado puedes abrirlo aquí; si no, pídeselo a tu encargado.</p>
+      <button class="btn" onclick="nuevoConteo('PARCIAL')">Abrir conteo de lo que escanee</button>
+      <button class="btn sec" onclick="nuevoConteo('COMPLETO')">Abrir conteo de toda la sucursal</button>
+      <button class="btn sec" onclick="cargarConteo()">Actualizar</button>`;
+    return;
+  }
+  const tipos = { COMPLETO: 'de toda la sucursal', PARCIAL: 'de lo que se escanee', CICLICO: 'cíclico (solo productos de la lista)' };
+  const abierto = conteo.estado === 'ABIERTO';
+  c.innerHTML = `
+    <h2>Conteo ${esc(conteo.folio_texto)}</h2>
+    <p class="mut">Conteo ${tipos[conteo.tipo] || ''}${conteo.descripcion ? ' · ' + esc(conteo.descripcion) : ''}</p>
+    <div class="resumen" style="margin-top:10px">
+      <div><b>${conteo.contados || 0}</b><small>productos contados</small></div>
+      <div><b>${(conteo.sesiones_abiertas || 0)}</b><small>personas contando</small></div>
+    </div>
+    ${abierto ? '<button class="btn" onclick="empezar()">Empezar a contar</button>'
+              : '<div class="aviso medio">La captura ya se cerró: el encargado está revisando las diferencias.</div>'}
+    <button class="btn sec" onclick="cargarConteo()">Actualizar</button>`;
+}
+
+async function nuevoConteo(tipo) {
+  if (tipo === 'COMPLETO' && !confirm('Se va a contar TODA la sucursal. Lo que no se cuente se tomará como no contado. ¿Abrir el conteo?')) return;
+  try {
+    conteo = await rpc('crear_conteo', { p_sucursal: sucursal.id, p_tipo: tipo, p_descripcion: 'Desde el celular', p_a_ciegas: true,
+                                         p_umbral_piezas: 3, p_umbral_importe: 300, p_productos: null, p_notas: null });
+    toast('Conteo abierto');
+    await cargarConteo();
+  } catch (e) {
+    toast(e.message, true);
+  }
+}
+
+async function empezar() {
+  try {
+    const todas = await rpc('sesiones_conteo', { p_conteo: conteo.id });
+    sesion = (todas || []).find(s => s.mia && s.estado === 'ABIERTA' && s.equipo === 'Celular') || null;
+    if (!sesion) {
+      sesion = await rpc('abrir_sesion_conteo', { p_conteo: conteo.id, p_nombre: 'Celular · ' + (perfil.nombre || perfil.usuario), p_equipo: 'Celular' });
+    }
+  } catch (e) {
+    toast(e.message, true);
+    return;
+  }
+  cola = leer('inv_cola_' + sesion.id, []);
+  ultimo = null;
+  pintarUltimo();
+  mostrar('vContar');
+  $('subtitulo').textContent = 'Conteo ' + conteo.folio_texto + ' · ' + (sucursal ? sucursal.clave : '');
+  await cargarLineas();
+  pintarPendientes();
+  procesarCola();
+  iniciarCamara();
+}
+
+function volverInicio() {
+  mostrar('vInicio');
+  pintarSucursal();
+  cargarConteo();
+}
+
+async function iniciarCamara() {
+  pausada = false;
+  $('btnCamara').textContent = 'Pausar';
+  $('msgCamara').textContent = 'Abriendo cámara…';
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    $('msgCamara').textContent = 'Este navegador no deja usar la cámara. Escribe el código abajo.';
+    return;
+  }
+  if ('BarcodeDetector' in window) {
+    try {
+      const formatos = await BarcodeDetector.getSupportedFormats();
+      const quiero = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'itf', 'qr_code'].filter(f => formatos.includes(f));
+      if (quiero.length) detector = new BarcodeDetector({ formats: quiero });
+    } catch (e) { detector = null; }
+  }
+  try {
+    if (detector) {
+      flujo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+      const v = $('video');
+      v.srcObject = flujo;
+      await v.play();
+      prepararLinterna();
+      $('msgCamara').textContent = 'Apunta al código de barras';
+      leerConDetector();
+    } else {
+      await cargarZxing();
+      const pistas = new Map();
+      pistas.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.UPC_A,
+        ZXing.BarcodeFormat.UPC_E, ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.CODE_39, ZXing.BarcodeFormat.ITF, ZXing.BarcodeFormat.QR_CODE]);
+      lectorZx = new ZXing.BrowserMultiFormatReader(pistas, 150);
+      await lectorZx.decodeFromConstraints({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } }, $('video'), (res) => {
+        if (res && !pausada) leido(res.getText());
+      });
+      flujo = $('video').srcObject;
+      prepararLinterna();
+      $('msgCamara').textContent = 'Apunta al código de barras';
+    }
+  } catch (e) {
+    $('msgCamara').textContent = /denied|permiso|NotAllowed/i.test(e.message || e.name) ? 'Diste "no permitir" a la cámara. Actívala en los permisos del navegador.' : 'No se pudo abrir la cámara: ' + (e.message || e.name);
+  }
+}
+
+function cargarZxing() {
+  if (window.ZXing) return Promise.resolve();
+  return new Promise((ok, mal) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js';
+    s.onload = ok;
+    s.onerror = () => mal(new Error('no se pudo cargar el lector de códigos'));
+    document.head.appendChild(s);
+  });
+}
+
+async function leerConDetector() {
+  const v = $('video');
+  while (flujo && detector) {
+    if (!pausada && v.readyState >= 2) {
+      try {
+        const r = await detector.detect(v);
+        if (r && r.length) leido(r[0].rawValue);
+      } catch (e) {}
+    }
+    await new Promise(t => setTimeout(t, 110));
+  }
+}
+
+function detenerCamara() {
+  if (lectorZx) { try { lectorZx.reset(); } catch (e) {} lectorZx = null; }
+  if (flujo) { flujo.getTracks().forEach(t => t.stop()); flujo = null; }
+  const v = $('video');
+  if (v) v.srcObject = null;
+}
+
+function alternarCamara() {
+  if (!flujo) { iniciarCamara(); return; }
+  pausada = !pausada;
+  $('btnCamara').textContent = pausada ? 'Seguir' : 'Pausar';
+  $('msgCamara').textContent = pausada ? 'Cámara en pausa' : 'Apunta al código de barras';
+}
+
+let pista = null, luz = false;
+function prepararLinterna() {
+  pista = flujo ? flujo.getVideoTracks()[0] : null;
+  const capaz = pista && pista.getCapabilities && pista.getCapabilities().torch;
+  $('btnLinterna').classList.toggle('oculto', !capaz);
+}
+function linterna() {
+  if (!pista) return;
+  luz = !luz;
+  pista.applyConstraints({ advanced: [{ torch: luz }] }).catch(() => {});
+}
+
+function leido(codigo) {
+  codigo = String(codigo || '').trim();
+  if (!codigo) return;
+  const ahora = Date.now();
+  if (codigo === ultimoCodigo && ahora - ultimoMomento < 1500) return;
+  ultimoCodigo = codigo;
+  ultimoMomento = ahora;
+  $('marco').classList.add('ok');
+  setTimeout(() => $('marco').classList.remove('ok'), 250);
+  capturar({ codigo, producto: null, cantidad: 1, etiqueta: codigo });
+}
+
+function capturar(item) {
+  item.clave = Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+  cola.push(item);
+  guardar('inv_cola_' + sesion.id, cola);
+  pintarPendientes();
+  procesarCola();
+}
+
+function pintarPendientes() {
+  const n = cola.length;
+  $('pendientes').classList.toggle('oculto', n <= 1);
+  $('pendientes').textContent = n + ' escaneos esperando conexión… se suben solos cuando vuelva el internet.';
+}
+
+async function procesarCola() {
+  if (enviando || !sesion) return;
+  enviando = true;
+  while (cola.length) {
+    const item = cola[0];
+    let r;
+    try {
+      r = await rpc('capturar_sesion_conteo', { p_sesion: sesion.id, p_codigo: item.producto ? null : item.codigo, p_producto: item.producto, p_cantidad: item.cantidad });
+    } catch (e) {
+      if (e.red) {
+        enviando = false;
+        pintarPendientes();
+        setTimeout(procesarCola, 4000);
+        return;
+      }
+      pitar(false);
+      toast(e.message, true);
+      cola.shift();
+      guardar('inv_cola_' + sesion.id, cola);
+      continue;
+    }
+    cola.shift();
+    guardar('inv_cola_' + sesion.id, cola);
+    if (r && r.encontrado) {
+      pitar(true);
+      ultimo = r;
+    } else {
+      pitar(false);
+      ultimo = { encontrado: false, codigo: item.codigo };
+    }
+    pintarUltimo();
+    pintarPendientes();
+    pedirLineas();
+  }
+  enviando = false;
+  pintarPendientes();
+}
+
+function pintarUltimo() {
+  const caja = $('ultimo');
+  caja.classList.remove('ok', 'mal');
+  $('ultTotalCaja').classList.add('oculto');
+  $('ultSistema').classList.add('oculto');
+  $('ultBotones').classList.add('oculto');
+  if (!ultimo) {
+    $('ultNombre').textContent = 'Escanea un producto';
+    $('ultCodigo').textContent = 'Cada escaneo suma 1 pieza';
+    return;
+  }
+  if (!ultimo.encontrado) {
+    caja.classList.add('mal');
+    $('ultNombre').textContent = 'Código no encontrado';
+    $('ultCodigo').textContent = (ultimo.codigo || '') + ' · búscalo por nombre abajo';
+    $('manual').value = '';
+    return;
+  }
+  caja.classList.add('ok');
+  $('ultNombre').textContent = ultimo.nombre;
+  $('ultCodigo').textContent = ultimo.codigo + (ultimo.piezas_codigo > 1 ? ' · este código vale ' + ultimo.piezas_codigo + ' piezas' : '');
+  $('ultTotal').textContent = ultimo.total;
+  $('ultTotalCaja').classList.remove('oculto');
+  $('ultBotones').classList.remove('oculto');
+  if (ultimo.existencia !== null && ultimo.existencia !== undefined) {
+    const dif = ultimo.total - ultimo.existencia;
+    $('ultSistema').textContent = 'En sistema: ' + ultimo.existencia + (dif === 0 ? ' · cuadra' : dif > 0 ? ' · sobran ' + dif : ' · faltan ' + (-dif));
+    $('ultSistema').classList.remove('oculto');
+  }
+}
+
+function ajustarUltimo(n) {
+  if (!ultimo || !ultimo.encontrado) return;
+  if (n < 0 && ultimo.total + n < 0) return;
+  capturar({ codigo: null, producto: ultimo.producto_id, cantidad: n, etiqueta: ultimo.nombre });
+}
+
+function pedirCantidad(linea) {
+  const obj = linea || (ultimo && ultimo.encontrado ? { producto_id: ultimo.producto_id, nombre: ultimo.nombre, cantidad: ultimo.total } : null);
+  if (!obj) return;
+  abrirModal(`
+    <h3>${esc(obj.nombre)}</h3>
+    <p class="mut">Escribe cuántas piezas hay en total de este producto.</p>
+    <input id="cantTotal" class="grande" type="number" inputmode="numeric" min="0" value="${obj.cantidad}">
+    <button class="btn" id="btnCant">Guardar</button>
+    <button class="btn sec" onclick="cerrarModal()">Cancelar</button>`);
+  const inp = $('cantTotal');
+  setTimeout(() => { inp.focus(); inp.select(); }, 60);
+  const ok = () => {
+    const v = parseInt(inp.value, 10);
+    if (isNaN(v) || v < 0) { toast('Cantidad no válida', true); return; }
+    const dif = v - obj.cantidad;
+    cerrarModal();
+    if (dif !== 0) capturar({ codigo: null, producto: obj.producto_id, cantidad: dif, etiqueta: obj.nombre });
+  };
+  $('btnCant').onclick = ok;
+  inp.onkeydown = e => { if (e.key === 'Enter') ok(); };
+}
+
+async function buscarManual() {
+  const t = $('manual').value.trim();
+  if (!t) return;
+  if (/^\d{6,14}$/.test(t)) {
+    ultimoCodigo = '';
+    capturar({ codigo: t, producto: null, cantidad: 1, etiqueta: t });
+    $('manual').value = '';
+    return;
+  }
+  let res = [];
+  try {
+    res = await rpc('buscar_productos_pos', { p_sucursal: sucursal.id, p_texto: t, p_limite: 25 });
+  } catch (e) {
+    toast(e.message, true);
+    return;
+  }
+  if (!res || !res.length) { toast('No se encontró "' + t + '"', true); return; }
+  abrirModal(`<h3>Elige el producto</h3><div class="resultados">${res.map((p, i) => `
+    <button data-i="${i}">${esc(p.nombre)}${p.presentacion ? ' · ' + esc(p.presentacion) : ''}
+      <small>${esc(p.codigo_barras || p.sku || '')}${p.laboratorio ? ' · ' + esc(p.laboratorio) : ''}</small></button>`).join('')}</div>
+    <button class="btn sec" onclick="cerrarModal()">Cancelar</button>`);
+  document.querySelectorAll('.resultados button').forEach(b => b.onclick = () => {
+    const p = res[parseInt(b.dataset.i, 10)];
+    cerrarModal();
+    $('manual').value = '';
+    capturar({ codigo: null, producto: p.producto_id, cantidad: 1, etiqueta: p.nombre });
+  });
+}
+
+function pedirLineas() {
+  clearTimeout(refrescoLista);
+  refrescoLista = setTimeout(cargarLineas, 400);
+}
+
+async function cargarLineas() {
+  if (!sesion) return;
+  try {
+    lineas = await rpc('conteo_sesion_lineas_json', { p_sesion: sesion.id }) || [];
+  } catch (e) {
+    return;
+  }
+  const piezas = lineas.reduce((a, l) => a + (l.cantidad || 0), 0);
+  $('resProductos').textContent = lineas.length;
+  $('resPiezas').textContent = piezas;
+  $('listaVacia').classList.toggle('oculto', lineas.length > 0);
+  $('lista').innerHTML = lineas.map((l, i) => `
+    <li data-i="${i}">
+      <div class="n"><b>${esc(l.nombre)}</b><small>${esc(l.codigo || '')}${l.ubicacion ? ' · ' + esc(l.ubicacion) : ''}</small></div>
+      <div class="c">${l.cantidad}</div>
+    </li>`).join('');
+  document.querySelectorAll('#lista li').forEach(li => li.onclick = () => pedirCantidad(lineas[parseInt(li.dataset.i, 10)]));
+}
+
+async function terminar() {
+  if (cola.length) { toast('Espera: todavía hay escaneos por subir.', true); return; }
+  if (!confirm('¿Terminaste de contar? Ya no podrás agregar más a esta sesión.')) return;
+  try {
+    const r = await rpc('terminar_sesion_conteo', { p_sesion: sesion.id });
+    detenerCamara();
+    $('txtListo').textContent = 'Contaste ' + (r.renglones || 0) + ' productos (' + (r.piezas || 0) + ' piezas) en el conteo ' + (r.conteo_folio || '') + '.';
+    sesion = null;
+    mostrar('vListo');
+  } catch (e) {
+    toast(e.message, true);
+  }
+}
+
+function abrirModal(html) {
+  $('hoja').innerHTML = html;
+  $('modal').classList.remove('oculto');
+  pausada = true;
+}
+function cerrarModal() {
+  $('modal').classList.add('oculto');
+  pausada = false;
+  $('btnCamara').textContent = 'Pausar';
+}
+
+$('manual').addEventListener('keydown', e => { if (e.key === 'Enter') buscarManual(); });
+$('contrasena').addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); });
+$('usuario').value = leer('inv_usuario', '');
+window.addEventListener('online', procesarCola);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) detenerCamara();
+  else if (!$('vContar').classList.contains('oculto') && !flujo) iniciarCamara();
+});
+cargarPerfil();
+</script>
+</body>
+</html>
