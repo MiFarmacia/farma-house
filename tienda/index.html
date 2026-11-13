@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
     <title>FarmaHouse · Tienda en línea</title>
-    <meta name="description" content="Compra en línea en FarmaHouse, distribuidora de medicamentos: precio de mayoreo por cantidad, envío a domicilio o recoge en sucursal.">
+    <meta name="description" content="Compra en línea en FarmaHouse, distribuidora de medicamentos: envío a domicilio o recoge en sucursal.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="FarmaHouse">
     <meta property="og:title" content="FarmaHouse · Tienda en línea">
-    <meta property="og:description" content="Medicamentos y productos de farmacia al menudeo y al mayoreo, con envío a domicilio o para recoger.">
+    <meta property="og:description" content="Medicamentos y productos de farmacia con precios de distribuidora, con envío a domicilio o para recoger.">
     <meta property="og:url" content="https://farma-house.com.mx/tienda/">
     <meta name="theme-color" content="#174a96">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -1285,8 +1285,7 @@
         .logo-sep{ width:1px; height:26px; background:rgba(225, 236, 252,.35); }
         .logo-circulo{ height:40px; width:auto; display:block; }
         .logo-fh{ height:46px !important; width:auto; background:#ffffff; border-radius:12px; padding:4px 10px; }
-        .mayoreo-tag{ display:inline-block; margin-top:6px; padding:3px 8px; border-radius:8px; font-size:11px; font-weight:700; color:var(--primary); background:var(--primary-glow); }
-        .mayoreo-nota{ display:block; font-size:11px; color:var(--primary); font-weight:600; margin-top:2px; }
+        .otra-suc-nota{ display:inline-block; margin-top:6px; padding:3px 8px; border-radius:8px; font-size:11px; font-weight:700; color:var(--primary); background:var(--primary-glow); }
         .entrega-op.bloqueada{ opacity:.5; cursor:not-allowed; }
         .aviso-envio{ margin:-4px 0 12px; padding:10px 12px; border-radius:12px; font-size:12.5px; line-height:1.45; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); color:var(--text-main); }
         .aviso-envio.ok{ background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.3); }
@@ -1605,7 +1604,7 @@
                 <div id="sugerenciasBusqueda" class="search-suggestions"></div>
                 <div class="pedido-rapido-barra" id="barraPedidoRapido" style="display:none;">
                     <button class="btn" type="button" onclick="abrirPedidoRapido()">⚡ Pedido rápido</button>
-                    <span>¿Surtes tu negocio? Pega tu lista o sube un Excel y llena el carrito en segundos, con precios de mayoreo.</span>
+                    <span>¿Surtes tu negocio? Pega tu lista o sube un Excel y llena el carrito en segundos.</span>
                 </div>
             </div>
             
@@ -1635,7 +1634,7 @@
             <span class="showcase-eyebrow">Nosotros</span>
             <h2 class="showcase-title">Tu distribuidora de medicamentos</h2>
         </div>
-        <p class="about-copy-app">FarmaHouse es la distribuidora de medicamentos que abastece a farmacias, consultorios y familias. Compra al menudeo o aprovecha el precio de mayoreo al llevar varias piezas del mismo producto: el precio baja solo en tu carrito. Trabajamos con laboratorios reconocidos y somos el respaldo de abasto de Mi Farmacia.</p>
+        <p class="about-copy-app">FarmaHouse es la distribuidora de medicamentos que abastece a farmacias, consultorios y familias. Surte tu negocio o tu casa desde aquí, con existencias al día. Trabajamos con laboratorios reconocidos y somos el respaldo de abasto de Mi Farmacia.</p>
     </section>
 
 
@@ -2350,7 +2349,7 @@
                 let desde = 0, todos = [];
                 while (true) {
                     const { data, error } = await sb.from("v_catalogo")
-                        .select("codigo,nombre,descripcion,categoria,imagen,precio,precio_anterior,promocion,requiere_receta,stock,precio_mayoreo,cantidad_mayoreo")
+                        .select("codigo,nombre,descripcion,categoria,imagen,precio,precio_anterior,promocion,requiere_receta,stock,en_otra")
                         .eq("sucursal", sucursalSeleccionada)
                         .order("nombre", { ascending: true })
                         .range(desde, desde + paso - 1);
@@ -2427,12 +2426,12 @@
                             <span style="font-size:10px; color:var(--primary-light); font-family:monospace; display:block; margin-bottom:4px; font-weight:700;">COD: ${esc(p.codigo || '-')}${p.requiere_receta ? ' · 📄 Requiere receta' : ''}</span>
                             <h3 onclick="abrirQuickView('${cod}')" style="cursor:pointer;">${esc(p.nombre || 'Sin nombre')}</h3>
                             <p>${esc(p.descripcion || '-')}</p>
-                            ${etiquetaMayoreo(p)}
+                            ${stockVal <= 0 && p.en_otra ? `<span class="otra-suc-nota">Disponible en ${esc(p.en_otra)}</span>` : ""}
                         </div>
                         <div class="card-footer">
                             <span class="price">$${pPrecio.toFixed(2)}</span>
                             <div class="card-actions">
-                                <small class="card-stock ${ stockVal <= 0 ? 'low' : '' }">${ stockVal >= 99 ? 'Disponible' : 'Stock: ' + stockVal }</small>
+                                <small class="card-stock ${ stockVal <= 0 ? 'low' : '' }">${ stockVal <= 0 ? 'Agotado' : stockVal >= 99 ? 'Disponible' : 'Stock: ' + stockVal }</small>
                                 <div style="display:flex; gap:6px;">
                                     <button class="btn" style="padding:6px 10px; background:var(--bg-input); color:var(--text-main); min-height:32px; border:var(--border-glow); box-shadow:none;" onclick="abrirQuickView('${cod}')" title="Vista Rápida">👁️</button>
                                     <button class="btn" ${stockVal <= 0 ? 'disabled' : ''} onclick="meterAlCarrito('${cod}', '${jsStr(p.nombre)}', ${pPrecio})">🛒</button>
@@ -2702,10 +2701,10 @@
             document.getElementById("qvCodigo").innerText = `CÓDIGO: ${p.codigo || '-'}`;
             document.getElementById("qvCategoria").innerText = (p.categoria || 'General') + (p.requiere_receta ? ' · Requiere receta' : '');
             document.getElementById("qvDescripcion").innerText = p.descripcion || 'Sin descripción detallada disponible.';
-            document.getElementById("qvPrecio").innerHTML = `$${pPrecio.toFixed(2)}${etiquetaMayoreo(p) ? "<br>" + etiquetaMayoreo(p) : ""}`;
+            document.getElementById("qvPrecio").innerHTML = `$${pPrecio.toFixed(2)}`;
 
             const qvStock = document.getElementById("qvStock");
-            qvStock.innerText = stockVal >= 99 ? "Disponible" : `Stock: ${stockVal}`;
+            qvStock.innerText = stockVal <= 0 ? ("Agotado" + (p.en_otra ? ` · hay en ${p.en_otra}` : "")) : stockVal >= 99 ? "Disponible" : `Stock: ${stockVal}`;
             qvStock.className = stockVal <= 0 ? "card-stock low" : "card-stock";
 
             const btnAdd = document.getElementById("qvBtnAgregar");
@@ -2765,20 +2764,8 @@
             aplicarEfectoRebote();
         }
 
-        function mayoreoDe(codigo) {
-            const p = dbProductos.find(x => x.codigo === codigo);
-            if (!p || !(Number(p.precio_mayoreo) > 0) || !(Number(p.cantidad_mayoreo) > 1)) return null;
-            return { precio: Number(p.precio_mayoreo), desde: Number(p.cantidad_mayoreo) };
-        }
-
         function precioItem(x) {
-            const m = mayoreoDe(x.code);
-            return m && x.qty >= m.desde ? m.precio : x.price;
-        }
-
-        function etiquetaMayoreo(p) {
-            if (!(Number(p.precio_mayoreo) > 0) || !(Number(p.cantidad_mayoreo) > 1)) return "";
-            return `<span class="mayoreo-tag">Mayoreo: $${Number(p.precio_mayoreo).toFixed(2)} c/u desde ${Number(p.cantidad_mayoreo)} pzas</span>`;
+            return x.price;
         }
 
         function subtotalCarrito() {
@@ -2828,7 +2815,6 @@
 
             container.innerHTML = Object.values(carrito).map(p => {
                 const unit = precioItem(p);
-                const may = mayoreoDe(p.code);
                 subtotal += unit * p.qty;
                 itemCount += p.qty;
                 return `
@@ -2836,7 +2822,6 @@
                         <div class="cart-item-info">
                             <h4>${esc(p.name)}</h4>
                             <span>$${unit.toFixed(2)} x ${p.qty}</span>
-                            ${may ? `<small class="mayoreo-nota">${p.qty >= may.desde ? "✔ Precio de mayoreo aplicado" : `Lleva ${may.desde} o más y pagas $${may.precio.toFixed(2)} c/u`}</small>` : ""}
                         </div>
                         <div class="cart-item-controls">
                             <button class="btn" style="background:var(--bg-input); color:var(--text-main); border:var(--border-glow); box-shadow:none;" onclick="modificarCantidadCarrito('${jsStr(p.code)}', -1)">−</button>
@@ -3233,7 +3218,7 @@
                 aviso.style.display = "block";
                 aviso.classList.toggle("ok", !bloqueado);
                 aviso.innerHTML = bloqueado
-                    ? `🚚 El envío a domicilio es para pedidos de mayoreo desde <b>${dineroMx(min)}</b>. Te faltan <b>${dineroMx(falta)}</b>. Por ahora puedes recoger en sucursal.`
+                    ? `🚚 El envío a domicilio es para pedidos desde <b>${dineroMx(min)}</b>. Te faltan <b>${dineroMx(falta)}</b>. Por ahora puedes recoger en sucursal.`
                     : `✔ Tu pedido ya tiene envío a domicilio (pedidos desde ${dineroMx(min)}).`;
             } else {
                 aviso.style.display = "none";
@@ -3249,7 +3234,7 @@
                 } else {
                     sel.innerHTML = `<option value="">Elige la fecha de entrega</option>` + fechasEntrega.map(f =>
                         `<option value="${esc(f.fecha)}"${f.fecha === fechaEntregaSel ? " selected" : ""}>${esc(f.texto.charAt(0).toUpperCase() + f.texto.slice(1))}${f.lugares != null && f.lugares <= 3 ? ` · quedan ${f.lugares}` : ""}</option>`).join("");
-                    nota.textContent = "Los pedidos de mayoreo se entregan en la fecha que elijas. Te avisamos por correo si cambia.";
+                    nota.textContent = "Los pedidos con envío se entregan en la fecha que elijas. Te avisamos por correo si cambia.";
                 }
             }
         }
@@ -3498,8 +3483,7 @@
         }
 
         function precioRapido(p, cant) {
-            const may = Number(p.precio_mayoreo) > 0 && Number(p.cantidad_mayoreo) > 1 && cant >= Number(p.cantidad_mayoreo);
-            return may ? Number(p.precio_mayoreo) : Number(p.precio) || 0;
+            return Number(p.precio) || 0;
         }
 
         function pintarListaRapida() {
@@ -3529,7 +3513,7 @@
                     const unit = precioRapido(p, r.cantidad);
                     importe = unit * r.cantidad;
                     if (r.cantidad > 0) { total += importe; listos++; }
-                    precioTxt = dineroMx(unit) + (unit < Number(p.precio) ? `<small class="lr-may">mayoreo</small>` : (Number(p.cantidad_mayoreo) > 1 && Number(p.precio_mayoreo) > 0 ? `<small>${dineroMx(p.precio_mayoreo)} desde ${p.cantidad_mayoreo}</small>` : ""));
+                    precioTxt = dineroMx(unit);
                     if (!estado) estado = `<span class="lr-estado ok">✔</span>`;
                 }
                 return `<tr><td class="lr-texto">${esc(r.texto)}</td><td>${celdaProd}</td>
